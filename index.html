@@ -65,7 +65,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
 <!-- APP -->
 <div x-show="user" class="relative flex-1 flex flex-col min-h-0" :style="(tab==='home'||tab==='book')?'background:radial-gradient(90% 36% at 100% 0%,#67adcf 0%,rgba(103,173,207,0) 100%),linear-gradient(180deg,#3d4fd8 0%,#2f4aa8 14%,#18204a 30%,#101216 48%,#101216 100%)':(tab==='results'?'background:#0d1114':'background:#181726')">
   <header class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
-    <h1 class="font-bold leading-none" :class="(tab==='home'||tab==='book'||tab==='results')?'text-[40px]':'text-[28px]'" x-text="tab==='home'?'Pulse':tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
+    <h1 class="font-bold leading-none" :class="tab==='home'?'text-[40px]':'text-[30px]'" x-text="tab==='home'?'Pulse':tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
     <button x-show="tab==='book'" @click="openFolderSheet()" class="text-white" aria-label="Tambah koleksi" x-html="ic('plus',32)"></button>
     <button x-show="tab==='results'" @click="closeResults()" class="text-white" aria-label="Tutup hasil" x-html="ic('x',30)"></button>
   </header>
@@ -190,7 +190,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
   <div x-show="fview" x-transition.opacity class="absolute inset-0 z-[34] bg-[#0d1114] flex flex-col">
     <div class="px-6 pt-6 pb-4 flex items-center gap-4 flex-shrink-0">
       <button @click="closeFolder()" class="flex-shrink-0" x-html="ic('back',28)" aria-label="Kembali"></button>
-      <h2 class="text-[28px] font-bold leading-none flex-1 truncate" x-text="fName"></h2>
+      <h2 class="text-[30px] font-bold leading-none flex-1 truncate" x-text="fName"></h2>
       <button x-show="fview!=='all'" @click="delAsk=true" class="text-[#d0343c]" x-html="ic('trash',26)" aria-label="Hapus koleksi"></button>
     </div>
     <div class="flex-1 min-h-0 overflow-y-auto px-6 pb-28">
@@ -254,7 +254,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
   <!-- RIWAYAT PENCARIAN -->
   <div x-show="histOpen" x-transition.opacity class="absolute inset-0 z-[35] bg-[#181726] flex flex-col">
     <div class="px-6 pt-5 pb-3 flex items-center justify-between flex-shrink-0">
-      <h2 class="text-[28px] font-bold leading-none">Riwayat Pencarian</h2>
+      <h2 class="text-[30px] font-bold leading-none">Riwayat Pencarian</h2>
       <button @click="histOpen=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button>
     </div>
     <div class="flex-1 min-h-0 mx-5 mb-4 rounded-3xl bg-[#22212f] border border-white/5 overflow-y-auto">
