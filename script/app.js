@@ -137,7 +137,7 @@ function pulse(){return{
   this.folders=[...this.folders];this.sv('pl_folders',this.folders);
  },
  plusTap(s){if(this.addTarget)this.toggleTarget(s);else this.pickSong=s},
- closeResults(){if(this.addTarget){this.finishAdd();return}this.tab=this.prevTab||'home'},
+ closeResults(){if(this.addTarget){this.finishAdd();return}this.tab='search'},
  get tName(){if(this.addTarget==='all')return 'Semua Lagu';const f=this.folders.find(x=>x.id===this.addTarget);return f?f.name:''},
  inTarget(id){
   if(this.addTarget==='all')return this.savedHas(id);
