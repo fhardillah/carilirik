@@ -132,16 +132,14 @@ input::placeholder{color:#7d7c9e;font-style:italic}
           </button>
         </template>
       </div>
-      <template x-if="folderSheet">
-        <div class="absolute inset-0 z-30 bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="folderSheet=false">
-        <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()">
-          <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button @click="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
+      <div x-show="folderSheet" class="absolute inset-0 z-30 bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="folderSheet=false">
+        <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()" @click.stop>
+          <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button type="button" @click.stop="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
           <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
           <p x-show="folderErr" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="folderErr"></p>
-          <button @click="createFolder()" class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
+          <button type="button" @click.stop="createFolder()" class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
         </div>
-        </div>
-      </template>
+      </div>
     </div>
 
     <!-- VENUE -->
