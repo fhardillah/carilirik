@@ -162,14 +162,14 @@ input::placeholder{color:#7d7c9e;font-style:italic}
   </nav>
 
   <!-- SEARCH MODAL -->
-  <div x-show="modal" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[37] bg-black/50 backdrop-blur-md flex px-4" :style="kb?('padding-top:1rem;padding-bottom:1rem;bottom:auto;height:'+vvH+'px;transform:translateY('+vvTop+'px)'):'padding-top:1.5rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom,0px))'" @click.self="modal=false">
-    <div class="relative w-full flex flex-col rounded-[2rem] p-6 overflow-y-auto" @focusin="focusIn()" @focusout="focusOut()" style="background:radial-gradient(70% 38% at 8% 12%,#9a9ce0 0%,rgba(154,156,224,0) 100%),radial-gradient(75% 42% at 100% 72%,#5a95b9 0%,rgba(90,149,185,0) 100%),radial-gradient(70% 34% at 0% 88%,#3c40a6 0%,rgba(60,64,166,0) 100%),linear-gradient(160deg,#2d3a76 0%,#35418c 100%)">
+  <div x-show="modal" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[37] bg-black/50 backdrop-blur-md flex px-4" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px;padding-top:.5rem;padding-bottom:.5rem'):'padding-top:1.5rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom,0px))'" @click.self="modal=false">
+    <div class="relative w-full min-h-0 flex flex-col rounded-[2rem] p-6 overflow-y-auto" @focusin="focusIn()" @focusout="focusOut()" style="background:radial-gradient(70% 38% at 8% 12%,#9a9ce0 0%,rgba(154,156,224,0) 100%),radial-gradient(75% 42% at 100% 72%,#5a95b9 0%,rgba(90,149,185,0) 100%),radial-gradient(70% 34% at 0% 88%,#3c40a6 0%,rgba(60,64,166,0) 100%),linear-gradient(160deg,#2d3a76 0%,#35418c 100%)">
       <button @click="modal=false" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center text-white" x-html="ic('x',26)" aria-label="Tutup"></button>
       <p class="text-[15px] mt-8">Judul Lagu</p>
       <textarea x-ref="tInput" x-model="qTitle" :rows="qTitle.length?1:2" @input="fit($el)" placeholder="Cari Judul Lagu" @keydown.enter.prevent="submitSearch()" class="w-full bg-transparent text-[40px] font-bold leading-[1.1] resize-none mt-1 placeholder:font-light placeholder:text-white/55"></textarea>
       <p class="text-[15px] mt-6">Penyanyi</p>
       <input x-model="qArtist" @keydown.enter.prevent="submitSearch()" type="text" placeholder="Semua" class="w-full bg-transparent text-[40px] font-bold leading-[1.15] mt-1 placeholder:font-light placeholder:text-white/55">
-      <div class="mt-auto pt-8 flex items-center gap-3">
+      <div class="mt-auto pt-8 flex items-center gap-3 shrink-0">
         <button @click="openHist()" @mousedown.prevent class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
         <button @click="submitSearch()" @mousedown.prevent class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
       </div>
@@ -177,7 +177,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
   </div>
 
   <!-- TAMBAH KOLEKSI -->
-  <div x-show="folderSheet" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-30 bg-black/50 backdrop-blur-md flex items-end" :style="kb?('bottom:auto;height:'+vvH+'px;transform:translateY('+vvTop+'px)'):''" @click.self="folderSheet=false">
+  <div x-show="folderSheet" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-30 bg-black/50 backdrop-blur-md flex items-end" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px'):''" @click.self="folderSheet=false">
     <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()">
       <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button @click="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
       <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
