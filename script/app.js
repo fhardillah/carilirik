@@ -24,6 +24,22 @@ const P={
  check:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'
 };
 function ic(n,s,f){return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="'+(f?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[n]+'</svg>'}
+const scriptLoads=new Map();
+function loadScript(src,isLoaded){
+ if(isLoaded())return Promise.resolve();
+ if(!scriptLoads.has(src)){
+  const load=new Promise((resolve,reject)=>{
+   const script=document.createElement('script');
+   script.src=src;
+   script.async=true;
+   script.onload=resolve;
+   script.onerror=()=>reject(new Error('Failed to load '+src));
+   document.head.appendChild(script);
+  }).catch(error=>{scriptLoads.delete(src);throw error});
+  scriptLoads.set(src,load);
+ }
+ return scriptLoads.get(src);
+}
 const PH='Ini lirik contoh untuk prototype.\n\nDi versi live, lirik asli diambil\ndari database LRCLIB.';
 function pulse(){return{
  user:'',nameInput:'',authOpen:'',menu:false,tab:'home',homeQuery:'',
@@ -220,11 +236,22 @@ function pulse(){return{
     }catch(e){}
    }
   }
+  if(/[\u4e00-\u9fff]/.test(t)&&!(/[\u3040-\u30ff]/.test(t)||/[\uac00-\ud7af]/.test(t))){
+   try{
+    await loadScript('https://cdn.jsdelivr.net/npm/pinyin-pro@3.26.0/dist/index.js',()=>!!window.pinyinPro);
+   }catch(error){
+    console.error(error);
+    this.latinOut='Modul transliterasi gagal dimuat. Coba muat ulang halaman.';
+    return;
+   }
+  }
   this.latinOut=this.latinize(t);
  },
  async getKuro(){
   if(window.__kuro!==undefined)return window.__kuro;
   try{
+   await loadScript('https://cdn.jsdelivr.net/npm/kuroshiro@1.2.0/dist/kuroshiro.min.js',()=>!!window.Kuroshiro);
+   await loadScript('https://cdn.jsdelivr.net/npm/kuroshiro-analyzer-kuromoji@1.1.0/dist/kuroshiro-analyzer-kuromoji.min.js',()=>!!window.KuromojiAnalyzer);
    if(!window.Kuroshiro||!window.KuromojiAnalyzer)throw 0;
    const K=Kuroshiro.default||Kuroshiro,A=KuromojiAnalyzer.default||KuromojiAnalyzer;
    const k=new K();
