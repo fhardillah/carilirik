@@ -132,6 +132,14 @@ input::placeholder{color:#7d7c9e;font-style:italic}
           </button>
         </template>
       </div>
+      <div x-show="folderSheet" x-transition.opacity class="fixed inset-0 z-[60] bg-black/50 backdrop-blur-md flex items-end justify-center" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px'):''" @click.self="folderSheet=false">
+        <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()">
+          <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button @click="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
+          <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
+          <p x-show="folderErr" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="folderErr"></p>
+          <button @click="createFolder()" class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
+        </div>
+      </div>
     </div>
 
     <!-- VENUE -->
@@ -177,16 +185,6 @@ input::placeholder{color:#7d7c9e;font-style:italic}
     <button @click="go('venue')" :class="tab==='venue'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('venue',22)"></span><span class="text-[11px] font-medium">Venue</span></button>
     <button @click="go('profile')" :class="tab==='profile'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('user',22)"></span><span class="text-[11px] font-medium">Profile</span></button>
   </nav>
-
-  <!-- TAMBAH KOLEKSI -->
-  <div x-show="folderSheet && tab==='book'" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-30 bg-black/50 backdrop-blur-md flex items-end" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px'):''" @click.self="folderSheet=false">
-    <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()">
-      <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button @click="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
-      <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
-      <p x-show="folderErr" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="folderErr"></p>
-      <button @click="createFolder()" class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
-    </div>
-  </div>
 
   <!-- DETAIL FOLDER -->
   <div x-show="fview" x-transition.opacity class="absolute inset-0 z-[34] bg-[#0d1114] flex flex-col">
