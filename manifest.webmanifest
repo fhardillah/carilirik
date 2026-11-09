@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Pulse — Cari Lirik",
-  "short_name": "Pulse",
+  "name": "Carilirik",
+  "short_name": "Carilirik",
   "description": "Cari, simpan, dan nyanyikan lirik lagu favoritmu.",
   "lang": "id",
   "start_url": "./",

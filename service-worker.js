@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'pulse-v1';
+const CACHE_VERSION = 'carilirik-v2';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
@@ -61,7 +61,7 @@ self.addEventListener('activate', event => {
  event.waitUntil((async () => {
   const keep = [APP_CACHE, RUNTIME_CACHE];
   const names = await caches.keys();
-  await Promise.all(names.filter(name => name.startsWith('pulse-') && !keep.includes(name))
+  await Promise.all(names.filter(name => /^(pulse-|carilirik-)/.test(name) && !keep.includes(name))
    .map(name => caches.delete(name)));
   await self.clients.claim();
  })());
