@@ -13,11 +13,11 @@ PWA buat cari dan bookmark lirik
 - `service-worker.js` — cache aplikasi dan dukungan offline
 - `assets/icons/` — ikon aplikasi
 
-Jalankan `npm install` sekali untuk memasang Tailwind CLI, lalu `npm run build` setelah mengubah utility class di HTML/JavaScript. Situs tetap disajikan sebagai file statis; hasil CSS build disimpan dan digunakan langsung.
+Jalankan `npm install` sekali untuk memasang Tailwind CLI. `npm run build` membangun CSS dan menyalin situs statis ke `dist/`. Jalankan ulang setelah mengubah utility class atau aset aplikasi.
 
 ## Deploy dan instalasi PWA
 
-Service worker dan prompt instalasi memerlukan origin HTTPS (atau `localhost` saat pengembangan); membuka `index.html` sebagai berkas lokal tidak mendukung instalasi PWA. Untuk GitHub Pages, publikasikan repository ini melalui **Settings → Pages** dari branch dan folder yang berisi `index.html`, lalu buka URL HTTPS situs tersebut di browser. Gunakan menu **Install app** atau **Add to Home Screen** di browser untuk memasang aplikasi.
+Service worker dan prompt instalasi memerlukan origin HTTPS (atau `localhost` saat pengembangan); membuka `index.html` sebagai berkas lokal tidak mendukung instalasi PWA. Vercel dikonfigurasi untuk menjalankan `npm run build` dan menerbitkan folder `dist/`. Untuk GitHub Pages, publikasikan repository ini melalui **Settings → Pages** dari branch dan folder yang berisi `index.html`, lalu buka URL HTTPS situs tersebut di browser. Gunakan menu **Install app** atau **Add to Home Screen** di browser untuk memasang aplikasi.
 
 Saat offline, aplikasi menyajikan app shell yang tersimpan dan fitur pencarian memakai data contoh lokal. Pencarian LRCLIB dan kamus transliterasi eksternal tetap memerlukan koneksi.
 
