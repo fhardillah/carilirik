@@ -18,6 +18,7 @@ const P={
  pause:'<path d="M8 5v14M16 5v14"/>',
  back:'<path d="m15 18-6-6 6-6"/>',
  bookmark:'<path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+ tick:'<path d="m5 12 4 4L19 6"/>',
  sad:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2M9 9h.01M15 9h.01"/>',
  timer:'<path d="M10 2h4M12 14l3-3"/><circle cx="12" cy="14" r="8"/>',
  check:'<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>'

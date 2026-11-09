@@ -96,7 +96,7 @@
         <template x-for="s in results" :key="s.id">
           <div class="flex items-center py-3.5">
             <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="s.artistName"></p></div>
-            <button @click="plusTap(s)" class="w-8 h-8 rounded-lg flex items-center justify-center ml-3 flex-shrink-0" :class="(addTarget?inTarget(s.id):savedHas(s.id))?'bg-[#3a48a2]':'bg-[#222432]'" x-html="ic((addTarget?inTarget(s.id):savedHas(s.id))?'check':'plus',16)" aria-label="Simpan ke koleksi"></button>
+            <button @click="plusTap(s)" class="w-8 h-8 rounded-lg flex items-center justify-center ml-3 flex-shrink-0" :class="(addTarget?inTarget(s.id):savedHas(s.id))?'bg-[#3a48a2]':'bg-[#222432]'" x-html="ic('bookmark',16,addTarget?inTarget(s.id):savedHas(s.id))" aria-label="Simpan ke koleksi"></button>
             <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
           </div>
         </template>
@@ -216,7 +216,7 @@
   </div>
 
   <!-- SIMPAN KE KOLEKSI -->
-  <div x-show="pickSong" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[36] bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="pickSong=null">
+  <div x-show="pickSong" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[60] bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="pickSong=null">
     <div class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-6 flex flex-col" style="max-height:75%;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
       <div class="flex items-start justify-between flex-shrink-0">
         <div class="min-w-0 pr-3"><h3 class="text-[18px] font-medium">Simpan ke Koleksi</h3><p class="text-[12px] text-[#8a89a6] truncate mt-0.5" x-text="pickSong?pickSong.trackName+' · '+pickSong.artistName:''"></p></div>
@@ -226,7 +226,7 @@
         <template x-for="f in folderCards" :key="f.id">
           <div @click="toggleFolder(f.id,pickSong)" class="flex items-center justify-between py-3.5 border-b border-white/5 cursor-pointer">
             <span class="text-[16px] truncate" x-text="f.name"></span>
-            <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ml-3" :class="inFolderId(f.id,pickSong?pickSong.id:'')?'bg-[#3a48a2]':'bg-[#2d2c3d]'" x-html="ic(inFolderId(f.id,pickSong?pickSong.id:'')?'check':'plus',14)"></span>
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ml-3" :class="inFolderId(f.id,pickSong?pickSong.id:'')?'bg-[#3a48a2]':'bg-[#2d2c3d]'" x-html="ic(inFolderId(f.id,pickSong?pickSong.id:'')?'check':'tick',14)"></span>
           </div>
         </template>
         <p x-show="folders.length===0" class="text-[12px] text-[#8a89a6] pt-4">Belum ada koleksi buatan. Buat lewat tombol + di tab Koleksi.</p>
@@ -256,34 +256,34 @@
 </div>
 
 <!-- LYRIC DETAIL -->
-<div x-show="sel" x-transition.opacity class="absolute inset-0 z-40 bg-[#14132a] flex flex-col" style="padding-top:env(safe-area-inset-top,0px)">
+<div x-show="sel" x-transition.opacity class="absolute inset-0 z-40 bg-[#0C1114] flex flex-col" style="padding-top:env(safe-area-inset-top,0px)">
   <div class="px-4 py-3.5 flex items-center gap-3 border-b border-white/5" style="overflow:hidden;transition:all .2s ease" :style="hideBar?'max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0':'max-height:6rem'">
-    <button @click="close()" class="w-9 h-9 rounded-full bg-[#25243d] flex items-center justify-center flex-shrink-0" x-html="ic('back',18)"></button>
+    <button @click="close()" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" x-html="ic('back',18)"></button>
     <div class="flex-1 min-w-0"><h3 class="font-semibold truncate" x-text="sel?.trackName"></h3><p class="text-xs text-[#8a89a6] truncate" x-text="sel?.artistName"></p></div>
-    
+    <button @click.stop="pickSong=sel" class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" :class="isSaved?'text-[#e5484d]':'text-white'" x-html="ic('bookmark',18,isSaved)" aria-label="Simpan ke koleksi"></button>
   </div>
   <div x-show="cjk" class="px-4 py-2 bg-[#1b1a2e] flex items-center justify-end text-xs" style="overflow:hidden;transition:all .2s ease" :style="(hideBar&&!auto)?'max-height:0;padding-top:0;padding-bottom:0;opacity:0':'max-height:6rem'">
     
     
     <div class="flex items-center gap-2">
       
-      <div x-show="cjk" class="flex bg-[#14132a] p-0.5 rounded-lg">
+      <div x-show="cjk" class="flex bg-[#0C1114] p-0.5 rounded-lg">
         <button @click="mode='orig'" :class="mode==='orig'?'bg-[#7b84ee]':'text-[#8a89a6]'" class="px-2 py-0.5 rounded-md text-[10px] font-semibold">Orig</button>
         <button @click="mode='latin';doLatin()" :class="mode==='latin'?'bg-[#7b84ee]':'text-[#8a89a6]'" class="px-2 py-0.5 rounded-md text-[10px] font-semibold">Latin</button>
       </div>
     </div>
   </div>
-  <div class="px-4 py-2 bg-[#17172b] border-b border-white/5 flex items-center justify-between" style="overflow:hidden;transition:all .2s ease" :style="(hideBar&&!auto)?'max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0':'max-height:6rem'">
+  <div class="px-4 py-2 bg-[#16191A] border-b border-white/5 flex items-center justify-between" style="overflow:hidden;transition:all .2s ease" :style="(hideBar&&!auto)?'max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0':'max-height:6rem'">
     <div class="flex items-center gap-1.5">
-      <button @click="setFs(-1)" class="w-8 h-8 rounded-lg bg-[#25243d] text-[12px] font-semibold" aria-label="Perkecil font">A</button>
+      <button @click="setFs(-1)" class="w-8 h-8 rounded-lg bg-[#1E2122] text-[12px] font-semibold" aria-label="Perkecil font">A</button>
       <span class="w-9 text-center text-[11px] text-[#8a89a6]" x-text="fs+'px'"></span>
-      <button @click="setFs(1)" class="w-8 h-8 rounded-lg bg-[#25243d] text-[18px] font-semibold leading-none" aria-label="Perbesar font">A</button>
+      <button @click="setFs(1)" class="w-8 h-8 rounded-lg bg-[#1E2122] text-[18px] font-semibold leading-none" aria-label="Perbesar font">A</button>
     </div>
     <div class="flex items-center gap-1.5">
-      <button @click="setSpeed(-1)" class="w-7 h-8 rounded-lg bg-[#25243d] text-[#b9bce8]" aria-label="Lebih lambat">−</button>
+      <button @click="setSpeed(-1)" class="w-7 h-8 rounded-lg bg-[#1E2122] text-[#b9bce8]" aria-label="Lebih lambat">−</button>
       <span class="w-8 text-center text-[11px] text-[#8a89a6]" x-text="speed+'x'"></span>
-      <button @click="setSpeed(1)" class="w-7 h-8 rounded-lg bg-[#25243d] text-[#b9bce8]" aria-label="Lebih cepat">+</button>
-      <button @click="toggleAuto()" :class="auto?'bg-[#7b84ee]':'bg-[#25243d] text-[#b9bce8]'" class="h-8 px-3 rounded-lg flex items-center gap-1.5 text-[12px] font-medium"><span x-html="ic(auto?'pause':'play',14,!auto)"></span><span x-text="auto?'Pause':'Auto'"></span></button>
+      <button @click="setSpeed(1)" class="w-7 h-8 rounded-lg bg-[#1E2122] text-[#b9bce8]" aria-label="Lebih cepat">+</button>
+      <button @click="toggleAuto()" :class="auto?'bg-[#7b84ee]':'bg-[#1E2122] text-[#b9bce8]'" class="h-8 px-3 rounded-lg flex items-center gap-1.5 text-[12px] font-medium"><span x-html="ic(auto?'pause':'play',14,!auto)"></span><span x-text="auto?'Pause':'Auto'"></span></button>
     </div>
   </div>
   <div x-ref="lyr" @scroll.passive="onScroll($event)" @touchstart.passive="stopAuto()" @wheel.passive="stopAuto()" class="flex-1 overflow-y-auto p-6 pb-32 text-center"><div class="whitespace-pre-line leading-relaxed select-text" :style="'font-size:'+fs+'px'" x-text="shown"></div></div>
