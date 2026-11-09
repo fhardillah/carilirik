@@ -2,7 +2,7 @@
 <html lang="id" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Pulse</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
@@ -64,7 +64,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
 
 <!-- APP -->
 <div x-show="user" class="relative flex-1 flex flex-col min-h-0" :style="(tab==='home'||tab==='book')?'background:radial-gradient(90% 36% at 100% 0%,#67adcf 0%,rgba(103,173,207,0) 100%),linear-gradient(180deg,#3d4fd8 0%,#2f4aa8 14%,#18204a 30%,#101216 48%,#101216 100%)':(tab==='results'?'background:#0d1114':'background:#181726')">
-  <header class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
+  <header x-show="tab!=='search'" class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
     <h1 class="font-bold leading-none" :class="tab==='home'?'text-[40px]':'text-[30px]'" x-text="tab==='home'?'Pulse':tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
     <button x-show="tab==='book'" @click="openFolderSheet()" class="text-white" aria-label="Tambah koleksi" x-html="ic('plus',32)"></button>
     <button x-show="tab==='results'" @click="closeResults()" class="text-white" aria-label="Tutup hasil" x-html="ic('x',30)"></button>
@@ -150,31 +150,31 @@ input::placeholder{color:#7d7c9e;font-style:italic}
         <button @click="logout()" class="mt-5 w-full py-3 rounded-full bg-[#c0403c] font-semibold text-[15px]">Logout</button>
       </div>
     </div>
+
+    <!-- PENCARIAN -->
+    <div x-show="tab==='search'" class="absolute inset-0 z-[35] p-4">
+      <div class="relative h-full min-h-0 flex flex-col rounded-[2rem] p-6 overflow-y-auto" @focusin="focusIn()" @focusout="focusOut()" style="background:radial-gradient(70% 38% at 8% 12%,#9a9ce0 0%,rgba(154,156,224,0) 100%),radial-gradient(75% 42% at 100% 72%,#5a95b9 0%,rgba(90,149,185,0) 100%),radial-gradient(70% 34% at 0% 88%,#3c40a6 0%,rgba(60,64,166,0) 100%),linear-gradient(160deg,#2d3a76 0%,#35418c 100%)">
+        <button @click="closeSearch()" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center text-white" x-html="ic('x',26)" aria-label="Tutup pencarian"></button>
+        <p class="text-[15px] mt-8">Judul Lagu</p>
+        <textarea x-ref="tInput" x-model="qTitle" :rows="qTitle.length?1:2" @input="fit($el)" placeholder="Cari Judul Lagu" @keydown.enter.prevent="submitSearch()" class="w-full bg-transparent text-[40px] font-bold leading-[1.1] resize-none mt-1 placeholder:font-light placeholder:text-white/55"></textarea>
+        <p class="text-[15px] mt-6">Penyanyi</p>
+        <input x-model="qArtist" @keydown.enter.prevent="submitSearch()" type="text" placeholder="Semua" class="w-full bg-transparent text-[40px] font-bold leading-[1.15] mt-1 placeholder:font-light placeholder:text-white/55">
+        <div class="mt-auto pt-8 flex items-center gap-3 shrink-0">
+          <button @click="openHist()" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
+          <button @click="submitSearch()" class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- NAV -->
-  <nav x-show="tab!=='results'" class="bg-[#0d1114] flex items-center justify-around flex-shrink-0" style="height:calc(5rem + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)">
+  <nav x-show="tab!=='results'&&tab!=='search'" class="bg-[#0d1114] flex items-center justify-around flex-shrink-0" style="height:calc(5rem + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)">
     <button @click="go('home')" :class="tab==='home'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('home',22)"></span><span class="text-[11px] font-medium">Home</span></button>
     <button @click="go('book')" :class="tab==='book'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('music',22)"></span><span class="text-[11px] font-medium">Koleksi</span></button>
     <button @click="openSearch(null)" class="w-14 h-14 rounded-full flex items-center justify-center bg-[#3a48a2] text-white flex-shrink-0" x-html="ic('search',24)" aria-label="Cari lirik"></button>
     <button @click="go('venue')" :class="tab==='venue'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('venue',22)"></span><span class="text-[11px] font-medium">Venue</span></button>
     <button @click="go('profile')" :class="tab==='profile'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('user',22)"></span><span class="text-[11px] font-medium">Profile</span></button>
   </nav>
-
-  <!-- SEARCH MODAL -->
-  <div x-show="modal" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[37] bg-black/50 backdrop-blur-md flex px-4" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px;padding-top:.5rem;padding-bottom:.5rem'):'padding-top:1.5rem;padding-bottom:calc(1rem + env(safe-area-inset-bottom,0px))'" @click.self="modal=false">
-    <div class="relative w-full min-h-0 flex flex-col rounded-[2rem] p-6 overflow-y-auto" @focusin="focusIn()" @focusout="focusOut()" style="background:radial-gradient(70% 38% at 8% 12%,#9a9ce0 0%,rgba(154,156,224,0) 100%),radial-gradient(75% 42% at 100% 72%,#5a95b9 0%,rgba(90,149,185,0) 100%),radial-gradient(70% 34% at 0% 88%,#3c40a6 0%,rgba(60,64,166,0) 100%),linear-gradient(160deg,#2d3a76 0%,#35418c 100%)">
-      <button @click="modal=false" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center text-white" x-html="ic('x',26)" aria-label="Tutup"></button>
-      <p class="text-[15px] mt-8">Judul Lagu</p>
-      <textarea x-ref="tInput" x-model="qTitle" :rows="qTitle.length?1:2" @input="fit($el)" placeholder="Cari Judul Lagu" @keydown.enter.prevent="submitSearch()" class="w-full bg-transparent text-[40px] font-bold leading-[1.1] resize-none mt-1 placeholder:font-light placeholder:text-white/55"></textarea>
-      <p class="text-[15px] mt-6">Penyanyi</p>
-      <input x-model="qArtist" @keydown.enter.prevent="submitSearch()" type="text" placeholder="Semua" class="w-full bg-transparent text-[40px] font-bold leading-[1.15] mt-1 placeholder:font-light placeholder:text-white/55">
-      <div class="mt-auto pt-8 flex items-center gap-3 shrink-0">
-        <button @click="openHist()" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
-        <button @click="submitSearch()" class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
-      </div>
-    </div>
-  </div>
 
   <!-- TAMBAH KOLEKSI -->
   <div x-show="folderSheet" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-30 bg-black/50 backdrop-blur-md flex items-end" :style="kb?('top:'+vvTop+'px;bottom:auto;height:'+vvH+'px'):''" @click.self="folderSheet=false">
@@ -338,7 +338,7 @@ const PH='Ini lirik contoh untuk prototype.\n\nDi versi live, lirik asli diambil
 function pulse(){return{
  user:'',nameInput:'',authOpen:'',menu:false,tab:'home',homeQuery:'',
  qTitle:'',qArtist:'',results:[],loading:false,searched:false,offline:false,
- ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',modal:false,showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',fview:null,pick:false,addTarget:null,delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
+ ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
  db:[
   ...["Rolling In The Deep", "To Be Loved", "Someone Like You", "He Won't Go", "Runaway", "Water Under The Bridge", "Skyfall", "Hello", "Easy On Me", "Set Fire To The Rain", "Chasing Pavements", "Make You Feel My Love", "Oh My God", "I Drink Wine", "Cold Shoulder", "River Lea", "Cry Your Heart Out", "Painting Pictures", "Hometown Glory", "One And Only", "My Same", "Daydreamer", "Tired", "Promise This", "Woman Like Me", "Turning Tables", "Send My Love (To Your New Lover)", "When We Were Young"].map((t,i)=>({id:'a'+i,trackName:t,artistName:'Adele',plainLyrics:PH})),
   ...['Good Riddance','Jesus Of Suburbia','Basket Case','Know Your Enemy','American Idiot','Last Night On Earth','Still Breathing','Boulevard Of Broken Dreams','Stray Hearts'].map((t,i)=>({id:'g'+i,trackName:t,artistName:'Green Day',plainLyrics:PH})),
@@ -350,13 +350,15 @@ function pulse(){return{
  sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},
  init(){this.user=this.ld('pl_user','');this.ranked=this.ld('pl_rank',[]).sort((a,b)=>b.openedCount-a.openedCount);this.saved=this.ld('pl_saved',[]);this.hist=this.ld('pl_hist',[]);this.lastView=this.ld('pl_last',null);this.folders=this.ld('pl_folders',[]);if(window.visualViewport){const f=()=>{if(this.kb)this.vv()};visualViewport.addEventListener('resize',f);visualViewport.addEventListener('scroll',f)}const p=this.ld('pl_prefs',{});if(p.fs)this.fs=p.fs;if(p.speed)this.speed=p.speed},
  login(){this.user=this.nameInput.trim()||'Guest';this.sv('pl_user',this.user);this.authOpen=''},
- logout(){this.menu=false;this.addTarget=null;this.delAsk=false;this.fview=null;this.folderSheet=false;this.histOpen=false;this.modal=false;this.tab='home';this.user='';this.sv('pl_user','');this.close()},
- go(t){this.tab=t;this.modal=false;this.histOpen=false;this.menu=false;this.fview=null;this.folderSheet=false;this.addTarget=null;this.delAsk=false;this.pickSong=null},
+ logout(){this.menu=false;this.addTarget=null;this.delAsk=false;this.fview=null;this.folderSheet=false;this.histOpen=false;this.tab='home';this.user='';this.sv('pl_user','');this.close()},
+ go(t){this.tab=t;this.histOpen=false;this.menu=false;this.fview=null;this.folderSheet=false;this.addTarget=null;this.delAsk=false;this.pickSong=null},
  openSearch(t){
+  if(this.tab!=='search')this.searchReturnTab=this.tab;
   if(t!==undefined)this.addTarget=t;
-  this.modal=true;this.kb=false;
+  this.tab='search';this.kb=false;
   this.$nextTick(()=>{const el=this.$refs.tInput;if(el){this.fit(el);el.focus()}});
  },
+ closeSearch(){this.tab=this.searchReturnTab;this.addTarget=null;this.kb=false},
  fit(el){el.style.height='auto';if(this.qTitle.length)el.style.height=el.scrollHeight+'px'},
  coarse(){return !!window.matchMedia&&matchMedia('(pointer:coarse)').matches},
  vv(){const v=window.visualViewport;this.vvH=v?v.height:window.innerHeight;this.vvTop=v?v.offsetTop:0},
@@ -364,7 +366,7 @@ function pulse(){return{
  focusOut(){setTimeout(()=>{const a=document.activeElement;if(!a||!(a.tagName==='TEXTAREA'||a.tagName==='INPUT'))this.kb=false},200)},
  submitSearch(){
   if(!this.qTitle.trim()&&!this.qArtist.trim())return;
-  this.modal=false;this.kb=false;document.activeElement?.blur?.();if(this.addTarget)this.fview=null;this.addHist();this.search();
+  this.kb=false;document.activeElement?.blur?.();if(this.addTarget)this.fview=null;this.addHist();this.search();
  },
  addHist(){
   const t=this.qTitle.trim(),a=this.qArtist.trim();
@@ -372,7 +374,7 @@ function pulse(){return{
   this.sv('pl_hist',this.hist);
  },
  useHist(h){this.qTitle=h.t;this.qArtist=h.a;this.histOpen=false;this.openSearch()},
- openHist(){this.modal=false;this.histOpen=true},
+ openHist(){this.histOpen=true},
  clearHist(){this.hist=[];this.sv('pl_hist',[])},
  get folderCards(){return [{id:'all',name:'Semua Lagu',count:this.saved.length},...this.folders.map(f=>({id:f.id,name:f.name,count:f.ids.filter(i=>this.savedHas(i)).length}))]},
  get fName(){if(this.fview==='all')return 'Semua Lagu';const f=this.folders.find(x=>x.id===this.fview);return f?f.name:''},
@@ -445,11 +447,11 @@ function pulse(){return{
   const had=this.savedHas(s.id);this.saved=had?this.saved.filter(x=>x.id!==s.id):[...this.saved,s];if(had)this.stripFolders(s.id);
   this.sv('pl_saved',this.saved);
  },
- fromHome(){this.qTitle=this.homeQuery.trim();this.qArtist='';this.tab='search';if(this.qTitle)this.search()},
+ fromHome(){this.qTitle=this.homeQuery.trim();this.qArtist='';this.openSearch(null)},
  async search(){
   const t=this.qTitle.trim().toLowerCase(),a=this.qArtist.trim().toLowerCase();
   if(!t&&!a)return;
-  this.loading=true;this.searched=true;this.results=[];this.offline=false;this.prevTab=this.tab==='results'?this.prevTab:this.tab;this.tab='results';this.lastQ={t:this.qTitle.trim(),a:this.qArtist.trim()};
+  this.loading=true;this.searched=true;this.results=[];this.offline=false;this.prevTab=this.tab==='results'?this.prevTab:(this.tab==='search'?this.searchReturnTab:this.tab);this.tab='results';this.lastQ={t:this.qTitle.trim(),a:this.qArtist.trim()};
   const local=this.db.filter(i=>{const tn=i.trackName.toLowerCase(),an=i.artistName.toLowerCase();return t&&!a?(tn.includes(t)||an.includes(t)):(!t||tn.includes(t))&&(!a||an.includes(a))});
   try{
    let u='https://lrclib.net/api/search?';
