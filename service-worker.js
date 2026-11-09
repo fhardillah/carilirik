@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'carilirik-v5';
+const CACHE_VERSION = 'carilirik-v7';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
@@ -9,12 +9,27 @@ const APP_ASSETS = [
  './script/app.js',
  './assets/icons/pulse.svg',
 ];
+const CORE_CDN_ASSETS = [
+ 'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js'
+];
 
 self.addEventListener('install', event => {
  event.waitUntil((async () => {
   const cache = await caches.open(APP_CACHE);
   await cache.addAll(APP_ASSETS);
-  await caches.open(RUNTIME_CACHE);
+  const runtimeCache = await caches.open(RUNTIME_CACHE);
+  await Promise.all(CORE_CDN_ASSETS.map(async url => {
+   const request = new Request(url, {mode:'no-cors'});
+   try {
+    const response = await fetch(request);
+    if (response.ok || response.type === 'opaque') {
+     await runtimeCache.put(request, response);
+    }
+   } catch (error) {
+    console.warn('PWA could not cache a required runtime asset:', url, error);
+   }
+  }));
+  await self.skipWaiting();
  })());
 });
 
