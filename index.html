@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="flex justify-center items-center" x-data="pulse()" x-init="init()" x-cloak>
-<div class="relative w-full max-w-[390px] h-full sm:h-[820px] sm:max-h-full sm:rounded-[2rem] overflow-hidden bg-black flex flex-col shadow-2xl border border-white/5">
+<div class="app-shell relative w-full h-full sm:h-[820px] sm:max-h-full sm:rounded-[2rem] overflow-hidden bg-black flex flex-col shadow-2xl border border-white/5">
 
 <!-- SPLASH -->
 <section x-show="!user" class="absolute inset-0 z-30 bg-[#14132a] flex flex-col">
@@ -27,8 +27,8 @@
     <button @click="authOpen='login'" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Login</button>
     <button @click="authOpen='create'" class="mt-5 text-[#7b84ee] text-[15px]">Create account</button>
   </div>
-  <div x-show="authOpen" x-transition.opacity class="absolute inset-0 z-10 bg-black/60 flex items-end" @click.self="authOpen=''">
-    <div class="w-full rounded-t-3xl bg-[#1b1a2e] p-6 space-y-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+  <div x-show="authOpen" x-transition.opacity class="absolute inset-0 z-10 bg-black/60 flex items-end justify-center" @click.self="authOpen=''">
+    <div class="w-full max-w-[560px] rounded-t-3xl bg-[#1b1a2e] p-6 space-y-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
       <h2 class="text-lg font-semibold" x-text="authOpen==='create'?'Create account':'Login'"></h2>
       <input x-model="nameInput" @keyup.enter="login()" type="text" placeholder="Username" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
       <button @click="login()" class="w-full py-3 rounded-xl bg-[#7b84ee] font-medium">Lanjut</button>
@@ -47,9 +47,9 @@
 
   <div class="flex-1 min-h-0 relative">
     <!-- HOME -->
-    <div x-show="tab==='home'" class="h-full flex flex-col px-5 pb-4">
-      <p class="text-[13px] font-bold tracking-wide uppercase mt-3 mb-3 px-1">Terakhir dilihat</p>
-      <div class="rounded-[1.75rem] bg-[#1c1d21] px-5 py-4 flex items-center min-h-[72px] flex-shrink-0">
+    <div x-show="tab==='home'" class="h-full flex flex-col px-5 pb-4 sm:grid sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:grid-rows-[auto_auto_1fr] sm:gap-x-6 sm:px-7">
+      <p class="text-[13px] font-bold tracking-wide uppercase mt-3 mb-3 px-1 sm:col-start-1 sm:row-start-1">Terakhir dilihat</p>
+      <div class="rounded-[1.75rem] bg-[#1c1d21] px-5 py-4 flex items-center min-h-[72px] flex-shrink-0 sm:col-start-1 sm:row-start-2">
         <template x-if="!lastView">
           <div class="flex items-center text-[#6c6a85]"><span class="mr-4 flex-shrink-0" x-html="ic('mic',26)"></span><p class="text-[14px]">Belum ada lirik yang kamu nyanyikan.</p></div>
         </template>
@@ -61,8 +61,8 @@
           </div>
         </template>
       </div>
-      <p class="text-[13px] font-bold tracking-wide uppercase mt-7 mb-3 px-1">Leaderboard</p>
-      <div class="flex-1 min-h-0 rounded-3xl bg-[#1c1d21] overflow-y-auto">
+      <p class="text-[13px] font-bold tracking-wide uppercase mt-7 mb-3 px-1 sm:col-start-2 sm:row-start-1 sm:mt-3">Leaderboard</p>
+      <div class="flex-1 min-h-0 rounded-3xl bg-[#1c1d21] overflow-y-auto sm:col-start-2 sm:row-start-2 sm:row-span-2">
         <div x-show="ranked.length===0" class="h-full flex flex-col items-center justify-center text-center px-12 text-[#6c6a85]">
           <span class="mb-4" x-html="ic('music',40)"></span>
           <p class="text-[15px] leading-snug">Belum ada lirik yang pernah kamu nyanyikan.</p>
@@ -98,7 +98,7 @@
 
     <!-- KOLEKSI -->
     <div x-show="tab==='book'" class="relative h-full overflow-y-auto px-5 pb-4">
-      <div class="grid grid-cols-3 gap-3 pt-1">
+      <div class="grid grid-cols-3 gap-3 pt-1 sm:grid-cols-4 sm:gap-4">
         <template x-for="f in folderCards" :key="f.id">
           <button @click="openFolder(f.id)" class="aspect-[3/4] rounded-2xl bg-[#201f2d] flex flex-col items-center justify-between py-5 px-2 text-center">
             <span></span>
@@ -131,7 +131,7 @@
       <div class="pt-6 pb-3 flex items-center justify-end flex-shrink-0">
         <button @click="closeSearch()" class="w-8 h-8 flex items-center justify-center text-white" x-html="ic('x',26)" aria-label="Tutup pencarian"></button>
       </div>
-      <form @submit.prevent="submitSearch()" class="flex-1 min-h-0 flex flex-col overflow-y-auto">
+      <form @submit.prevent="submitSearch()" class="flex-1 min-h-0 flex flex-col overflow-y-auto sm:w-full sm:max-w-[640px] sm:self-center">
         <p class="text-[15px] mt-8">Judul Lagu</p>
         <textarea x-ref="tInput" x-model="qTitle" :rows="qTitle.length?1:2" @input="fit($el)" placeholder="Cari Judul Lagu" @keydown.enter.prevent="submitSearch()" class="w-full bg-transparent text-[40px] font-bold leading-[1.1] resize-none mt-1 placeholder:font-light placeholder:text-white/55"></textarea>
         <p class="text-[15px] mt-6">Penyanyi</p>
@@ -154,7 +154,7 @@
   </nav>
 
   <div x-show="folderSheet && tab==='book'" class="absolute inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-end justify-center" @click.self="folderSheet=false">
-    <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()" @click.stop>
+    <div class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" @focusin="focusIn()" @focusout="focusOut()" @click.stop>
       <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button type="button" @click.stop="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
       <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
       <p x-show="folderErr" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="folderErr"></p>
@@ -182,7 +182,7 @@
     <button @click="openSearch(fview)" class="absolute right-4 w-14 h-14 rounded-full bg-[#7b84ee] flex items-center justify-center" style="bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))" x-html="ic('search',24)" aria-label="Cari lagu untuk ditambahkan"></button>
     <!-- konfirmasi hapus lagu dari koleksi -->
     <div x-show="rmSong" x-transition.opacity class="absolute inset-0 z-10 bg-black/50 backdrop-blur-md flex items-center justify-center px-6" @click.self="rmSong=null">
-      <div class="w-full rounded-3xl bg-[#232436] border border-white/10 overflow-hidden">
+      <div class="w-full max-w-[560px] rounded-3xl bg-[#232436] border border-white/10 overflow-hidden">
         <div class="px-6 py-9 text-center">
           <p class="text-[17px] leading-snug">Hapus <span x-text="rmSong?rmSong.trackName:''"></span> dari koleksi ini?</p>
           <p x-show="fview==='all'" class="text-[12px] text-[#8a89a6] mt-2">Lagu juga akan keluar dari koleksi lainnya.</p>
@@ -195,7 +195,7 @@
     </div>
     <!-- konfirmasi hapus koleksi -->
     <div x-show="delAsk" x-transition.opacity class="absolute inset-0 z-10 bg-black/50 backdrop-blur-md flex items-center justify-center px-6" @click.self="delAsk=false">
-      <div class="w-full rounded-3xl bg-[#232436] border border-white/10 overflow-hidden">
+      <div class="w-full max-w-[560px] rounded-3xl bg-[#232436] border border-white/10 overflow-hidden">
         <div class="px-6 py-9 text-center">
           <p class="text-[17px] leading-snug">Hapus koleksi “<span x-text="fName"></span>”?</p>
           <p class="text-[12px] text-[#8a89a6] mt-2">Lagunya tetap ada di Semua Lagu.</p>
@@ -209,8 +209,8 @@
   </div>
 
   <!-- SIMPAN KE KOLEKSI -->
-  <div x-show="pickSong" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[36] bg-black/50 backdrop-blur-md flex items-end" @click.self="pickSong=null">
-    <div class="w-full rounded-t-[2rem] bg-[#21202f] px-6 pt-6 flex flex-col" style="max-height:75%;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+  <div x-show="pickSong" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[36] bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="pickSong=null">
+    <div class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-6 flex flex-col" style="max-height:75%;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
       <div class="flex items-start justify-between flex-shrink-0">
         <div class="min-w-0 pr-3"><h3 class="text-[18px] font-medium">Simpan ke Koleksi</h3><p class="text-[12px] text-[#8a89a6] truncate mt-0.5" x-text="pickSong?pickSong.trackName+' · '+pickSong.artistName:''"></p></div>
         <button @click="pickSong=null" class="w-8 h-8 flex items-center justify-center flex-shrink-0" x-html="ic('x',24)" aria-label="Tutup"></button>

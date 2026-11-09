@@ -22,3 +22,5 @@ body{background:#0b0b14;color:#fff;font-family:'Silka',sans-serif;padding-top:en
 input,textarea{outline:none}
 input::placeholder{color:#7d7c9e;font-style:italic}
 .grad{background:linear-gradient(180deg,#4a43a6 0%,#8b8fdc 26%,#3b2b7c 52%,#0a0612 76%,#000 100%)}
+.app-shell{max-width:390px}
+@media (min-width:640px){.app-shell{max-width:800px}}
