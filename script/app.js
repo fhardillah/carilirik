@@ -155,6 +155,7 @@ function pulse(){return{
  },
  finishAdd(){const t=this.addTarget;this.addTarget=null;this.tab='book';this.fview=t},
  savedHas(id){return this.saved.some(x=>x.id===id)},
+ songMeta(song){return [song?.artistName,song?.albumName].filter(Boolean).join(' · ')},
  toggleSaved(s){
   const had=this.savedHas(s.id);this.saved=had?this.saved.filter(x=>x.id!==s.id):[...this.saved,s];if(had)this.stripFolders(s.id);
   this.sv('pl_saved',this.saved);
@@ -171,12 +172,12 @@ function pulse(){return{
    else u+='q='+encodeURIComponent((this.qTitle||this.qArtist).trim());
    const r=await fetch(u);if(!r.ok)throw 0;
    const d=await r.json();
-   this.results=d.map(x=>({id:'l'+x.id,trackName:x.trackName||x.name||'Unknown',artistName:x.artistName||'Unknown',plainLyrics:x.plainLyrics||(x.syncedLyrics?x.syncedLyrics.replace(/\[\d+:\d+(\.\d+)?\]\s?/g,'').trim():'Lirik tidak tersedia.')}));
+   this.results=d.map(x=>({id:'l'+x.id,trackName:x.trackName||x.name||'Unknown',artistName:x.artistName||'Unknown',albumName:x.albumName||'',plainLyrics:x.plainLyrics||(x.syncedLyrics?x.syncedLyrics.replace(/\[\d+:\d+(\.\d+)?\]\s?/g,'').trim():'Lirik tidak tersedia.')}));
   }catch(e){this.results=local;this.offline=true}
   this.loading=false;
  },
  open(s){
-  this.lastView={id:s.id,trackName:s.trackName,artistName:s.artistName,plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics};this.sv('pl_last',this.lastView);
+  this.lastView={id:s.id,trackName:s.trackName,artistName:s.artistName,albumName:s.albumName||'',plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics};this.sv('pl_last',this.lastView);
   const f=this.db.find(d=>d.id===s.id);
   this.sel=Object.assign({},s,{latinLyrics:s.latinLyrics||(f&&f.latinLyrics)});
   this.dwell=0;this.met=false;this.mode='orig';this.stopAuto();this.hideBar=false;this.lastTop=0;this.latinOut='';this.$nextTick(()=>{if(this.$refs.lyr)this.$refs.lyr.scrollTop=0});
@@ -214,7 +215,7 @@ function pulse(){return{
  count(s){
   const l=[...this.ranked];
   const e=l.find(x=>x.trackName.toLowerCase()===s.trackName.toLowerCase()&&x.artistName.toLowerCase()===s.artistName.toLowerCase());
-  if(e)e.openedCount++;else l.push({id:s.id,trackName:s.trackName,artistName:s.artistName,plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics,openedCount:1});
+  if(e){e.openedCount++;e.albumName=e.albumName||s.albumName||''}else l.push({id:s.id,trackName:s.trackName,artistName:s.artistName,albumName:s.albumName||'',plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics,openedCount:1});
   l.sort((a,b)=>b.openedCount-a.openedCount);this.ranked=l;this.sv('pl_rank',l);
  },
  async doLatin(){

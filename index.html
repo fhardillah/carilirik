@@ -59,7 +59,7 @@
         </template>
         <template x-if="lastView">
           <div class="flex items-center w-full">
-            <div class="flex-1 min-w-0"><p class="text-[17px] font-medium truncate" x-text="lastView.trackName"></p><p class="text-[13px] text-[#6c6a85] truncate" x-text="lastView.artistName"></p></div>
+            <div class="flex-1 min-w-0"><p class="text-[17px] font-medium truncate" x-text="lastView.trackName"></p><p class="text-[13px] text-[#6c6a85] truncate" x-text="songMeta(lastView)"></p></div>
             
             <button @click="open(lastView)" class="w-10 h-10 rounded-xl bg-[#2a2b33] flex items-center justify-center ml-2 flex-shrink-0" aria-label="Buka lirik" x-html="ic('play',18)"></button>
           </div>
@@ -74,7 +74,7 @@
         <template x-for="(s,i) in ranked.slice(0,10)" :key="s.id">
           <div @click="open(s)" class="flex items-center px-4 py-2.5 cursor-pointer">
             <span class="w-8 text-[15px] font-bold" x-text="i+1"></span>
-            <div class="flex-1 min-w-0"><p class="text-[16px] leading-tight truncate" x-text="s.trackName"></p><p class="text-[14px] text-[#5f5c93] truncate" x-text="s.artistName"></p></div>
+            <div class="flex-1 min-w-0"><p class="text-[16px] leading-tight truncate" x-text="s.trackName"></p><p class="text-[14px] text-[#5f5c93] truncate" x-text="songMeta(s)"></p></div>
             <span class="text-[13px] text-[#6c6a85] ml-2" x-text="s.openedCount+'x'"></span>
           </div>
         </template>
@@ -92,7 +92,7 @@
       <div x-show="results.length>0" class="flex-1 overflow-y-auto pb-6">
         <template x-for="s in results" :key="s.id">
           <div class="flex items-center py-3.5">
-            <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="s.artistName"></p></div>
+            <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="songMeta(s)"></p></div>
             <button @click="plusTap(s)" class="w-8 h-8 rounded-lg flex items-center justify-center ml-3 flex-shrink-0" :class="(addTarget?inTarget(s.id):savedHas(s.id))?'bg-[#3a48a2]':'bg-[#222432]'" x-html="ic('bookmark',16,addTarget?inTarget(s.id):savedHas(s.id))" aria-label="Simpan ke koleksi"></button>
             <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
           </div>
@@ -177,7 +177,7 @@
       <div x-show="fSongs.length===0" class="py-24 text-center text-[#6c6a85] text-[14px]">Belum ada lagu. Tekan tombol cari untuk menambahkan.</div>
       <template x-for="s in fSongs" :key="s.id">
         <div class="flex items-center py-3">
-          <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="s.artistName"></p></div>
+          <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="songMeta(s)"></p></div>
           <button @click="rmSong=s" class="w-8 h-8 rounded-lg bg-[#222432] text-[#7d7f9f] flex items-center justify-center ml-3 flex-shrink-0" x-html="ic('minus',14)" aria-label="Keluarkan dari koleksi"></button>
           <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
         </div>
@@ -216,7 +216,7 @@
   <div x-show="pickSong" x-transition.opacity class="absolute inset-x-0 top-0 bottom-0 z-[60] bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="pickSong=null">
     <div class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-6 flex flex-col" style="max-height:75%;padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
       <div class="flex items-start justify-between flex-shrink-0">
-        <div class="min-w-0 pr-3"><h3 class="text-[18px] font-medium">Simpan ke Koleksi</h3><p class="text-[12px] text-[#8a89a6] truncate mt-0.5" x-text="pickSong?pickSong.trackName+' · '+pickSong.artistName:''"></p></div>
+        <div class="min-w-0 pr-3"><h3 class="text-[18px] font-medium">Simpan ke Koleksi</h3><p class="text-[12px] text-[#8a89a6] truncate mt-0.5" x-text="pickSong?pickSong.trackName+' · '+songMeta(pickSong):''"></p></div>
         <button @click="pickSong=null" class="w-8 h-8 flex items-center justify-center flex-shrink-0" x-html="ic('x',24)" aria-label="Tutup"></button>
       </div>
       <div class="mt-3 overflow-y-auto">
@@ -256,7 +256,7 @@
 <div x-show="sel" x-transition.opacity class="absolute inset-0 z-40 bg-[#0C1114] flex flex-col" style="padding-top:env(safe-area-inset-top,0px)">
   <div class="px-4 py-3.5 flex items-center gap-3 border-b border-white/5" style="overflow:hidden;transition:all .2s ease" :style="hideBar?'max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0':'max-height:6rem'">
     <button @click="close()" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" x-html="ic('back',18)"></button>
-    <div class="flex-1 min-w-0"><h3 class="font-semibold truncate" x-text="sel?.trackName"></h3><p class="text-xs text-[#8a89a6] truncate" x-text="sel?.artistName"></p></div>
+    <div class="flex-1 min-w-0"><h3 class="font-semibold truncate" x-text="sel?.trackName"></h3><p class="text-xs text-[#8a89a6] truncate" x-text="songMeta(sel)"></p></div>
     <button @click.stop="pickSong=sel" class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" :class="isSaved?'text-[#e5484d]':'text-white'" x-html="ic('bookmark',18,isSaved)" aria-label="Simpan ke koleksi"></button>
   </div>
   <div x-show="cjk" class="px-4 py-2 bg-[#1b1a2e] flex items-center justify-end text-xs" style="overflow:hidden;transition:all .2s ease" :style="(hideBar&&!auto)?'max-height:0;padding-top:0;padding-bottom:0;opacity:0':'max-height:6rem'">
