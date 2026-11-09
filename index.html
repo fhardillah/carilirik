@@ -163,7 +163,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
         <input x-model="qArtist" type="text" placeholder="Semua" class="w-full bg-transparent text-[40px] font-bold leading-[1.15] mt-1 placeholder:font-light placeholder:text-white/55">
         <div class="mt-auto pt-8 flex items-center gap-3 shrink-0">
           <button type="button" @click="openHist()" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
-          <button type="submit" class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
+          <button type="submit" @touchend.prevent.stop="submitSearch()" class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
         </div>
       </form>
     </div>
@@ -357,7 +357,7 @@ function pulse(){return{
  openSearch(t){
   if(this.tab!=='search')this.searchReturnTab=this.tab;
   if(t!==undefined)this.addTarget=t;
-  this.tab='search';this.kb=false;
+  this.folderSheet=false;this.histOpen=false;this.tab='search';this.kb=false;
   this.$nextTick(()=>{const el=this.$refs.tInput;if(el){this.fit(el);el.focus()}});
  },
  closeSearch(){this.tab=this.searchReturnTab;this.addTarget=null;this.kb=false},
@@ -367,8 +367,14 @@ function pulse(){return{
  focusIn(){if(this.coarse()){this.vv();this.kb=true}},
  focusOut(){setTimeout(()=>{const a=document.activeElement;if(!a||!(a.tagName==='TEXTAREA'||a.tagName==='INPUT'))this.kb=false},200)},
  submitSearch(){
+  if(this.tab==='results')return;
   if(!this.qTitle.trim()&&!this.qArtist.trim())return;
-  this.kb=false;document.activeElement?.blur?.();if(this.addTarget)this.fview=null;this.addHist();this.search();
+  const activeElement=document.activeElement;
+  this.folderSheet=false;this.histOpen=false;this.kb=false;
+  if(this.addTarget)this.fview=null;
+  this.addHist();
+  this.search();
+  this.$nextTick(()=>activeElement?.blur?.());
  },
  addHist(){
   const t=this.qTitle.trim(),a=this.qArtist.trim();
