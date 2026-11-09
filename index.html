@@ -170,8 +170,8 @@ input::placeholder{color:#7d7c9e;font-style:italic}
       <p class="text-[15px] mt-6">Penyanyi</p>
       <input x-model="qArtist" @keydown.enter.prevent="submitSearch()" type="text" placeholder="Semua" class="w-full bg-transparent text-[40px] font-bold leading-[1.15] mt-1 placeholder:font-light placeholder:text-white/55">
       <div class="mt-auto pt-8 flex items-center gap-3 shrink-0">
-        <button @click="openHist()" @mousedown.prevent class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
-        <button @click="submitSearch()" @mousedown.prevent class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
+        <button @click="openHist()" class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0" x-html="ic('history',22)" aria-label="Riwayat pencarian"></button>
+        <button @click="submitSearch()" class="flex-1 h-12 rounded-full bg-white text-[#3a3a3f] font-semibold text-[15px]">Cari Lirik</button>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@ input::placeholder{color:#7d7c9e;font-style:italic}
       <div class="flex items-center justify-between"><h3 class="text-[18px] font-medium">Tambah Koleksi</h3><button @click="folderSheet=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup"></button></div>
       <input x-ref="fInput" x-model="folderName" @keydown.enter.prevent="createFolder()" maxlength="30" type="text" placeholder="Nama folder" class="w-full mt-7 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
       <p x-show="folderErr" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="folderErr"></p>
-      <button @click="createFolder()" @mousedown.prevent class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
+      <button @click="createFolder()" class="w-full mt-5 py-3 text-center text-[18px] font-bold text-[#7b84ee]">Buat folder</button>
     </div>
   </div>
 
@@ -364,7 +364,7 @@ function pulse(){return{
  focusOut(){setTimeout(()=>{const a=document.activeElement;if(!a||!(a.tagName==='TEXTAREA'||a.tagName==='INPUT'))this.kb=false},200)},
  submitSearch(){
   if(!this.qTitle.trim()&&!this.qArtist.trim())return;
-  this.modal=false;if(this.addTarget)this.fview=null;this.addHist();this.search();
+  this.modal=false;this.kb=false;document.activeElement?.blur?.();if(this.addTarget)this.fview=null;this.addHist();this.search();
  },
  addHist(){
   const t=this.qTitle.trim(),a=this.qArtist.trim();
