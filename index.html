@@ -28,15 +28,23 @@
   </div>
   <div class="relative mt-auto px-6 pb-8 text-center">
     <h1 class="text-[56px] font-bold text-[#7b84ee] mb-14 leading-none">Carilirik</h1>
-    <button @click="authOpen='login'" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Login</button>
-    <button @click="authOpen='create'" class="mt-5 text-[#7b84ee] text-[15px]">Create account</button>
+    <button @click="openAuth('login')" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Login</button>
+    <button @click="openAuth('create')" class="mt-5 text-[#7b84ee] text-[15px]">Create account</button>
+    <p x-show="!authOpen&&authError" role="alert" class="mt-4 text-[13px] text-[#f38ba8]" x-text="authError"></p>
   </div>
   <div x-show="authOpen" x-transition.opacity class="absolute inset-0 z-10 bg-black/60 flex items-end justify-center" @click.self="authOpen=''">
-    <div class="w-full max-w-[560px] rounded-t-3xl bg-[#1b1a2e] p-6 space-y-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
-      <h2 class="text-lg font-semibold" x-text="authOpen==='create'?'Create account':'Login'"></h2>
-      <input x-model="nameInput" @keyup.enter="login()" type="text" placeholder="Username" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
-      <button @click="login()" class="w-full py-3 rounded-xl bg-[#7b84ee] font-medium">Lanjut</button>
-      <p class="text-[11px] text-[#7d7c9e] text-center">Prototype: tanpa password, data tersimpan di perangkat ini.</p>
+    <form @submit.prevent="login()" class="w-full max-w-[560px] rounded-t-3xl bg-[#1b1a2e] p-6 space-y-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold" x-text="authOpen==='create'?'Buat akun':'Login'"></h2>
+        <button type="button" @click="authOpen='';authError='';authMessage=''" class="w-8 h-8 flex items-center justify-center" aria-label="Tutup login" x-html="ic('x',22)"></button>
+      </div>
+      <input x-show="authOpen==='create'" x-model="nameInput" type="text" placeholder="Username" autocomplete="username" maxlength="24" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
+      <input x-model="emailInput" type="email" placeholder="Email" autocomplete="email" maxlength="254" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
+      <input x-model="passwordInput" type="password" placeholder="Password (minimal 8 karakter)" :autocomplete="authOpen==='create'?'new-password':'current-password'" maxlength="72" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
+      <p x-show="authError" role="alert" class="text-[13px] text-[#f38ba8]" x-text="authError"></p>
+      <p x-show="authMessage" role="status" class="text-[13px] text-[#a6e3a1]" x-text="authMessage"></p>
+      <button type="submit" :disabled="authBusy" class="w-full py-3 rounded-xl bg-[#7b84ee] font-medium disabled:opacity-50" x-text="authBusy?'Memproses…':authOpen==='create'?'Buat akun':'Login'"></button>
+      <button type="button" @click="openAuth(authOpen==='create'?'login':'create')" class="w-full text-[13px] text-[#b8b8d0]" x-text="authOpen==='create'?'Sudah punya akun? Login':'Belum punya akun? Daftar'"></button>
     </div>
   </div>
 </section>

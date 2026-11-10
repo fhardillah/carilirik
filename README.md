@@ -12,8 +12,15 @@ PWA buat cari dan bookmark lirik
 - `manifest.webmanifest` — metadata instalasi PWA
 - `service-worker.js` — cache aplikasi dan dukungan offline
 - `assets/icons/` — ikon aplikasi
+- `supabase/schema.sql` — tabel profil, trigger pendaftaran, dan kebijakan RLS
 
 Jalankan `npm install` sekali untuk memasang Tailwind CLI. `npm run build` membangun CSS dan menyalin situs statis ke `dist/`. Jalankan ulang setelah mengubah utility class atau aset aplikasi.
+
+## Login Supabase
+
+Login menggunakan Supabase Auth dengan email dan password; username dibuat saat pendaftaran dan disimpan sebagai profil. Password tidak disimpan di tabel aplikasi. Frontend menggunakan project URL dan publishable key Supabase di `script/app.js`; publishable key memang boleh berada di client, tetapi jangan pernah memasukkan `service_role` atau secret key ke aplikasi.
+
+Sebelum rilis, jalankan `supabase/schema.sql` melalui Supabase SQL Editor untuk membuat `profiles`, menyimpan username/email saat akun Auth dibuat, dan mengaktifkan Row Level Security. Pastikan Email Auth diaktifkan di Supabase. Jika konfirmasi email aktif, pengguna perlu mengonfirmasi email sebelum login; jika nonaktif, akun langsung masuk setelah pendaftaran.
 
 ## Deploy dan instalasi PWA
 
