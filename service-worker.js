@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'carilirik-v13';
+const CACHE_VERSION = 'carilirik-v16';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
@@ -10,6 +10,15 @@ const APP_ASSETS = [
  './assets/icons/pulse.svg',
  './assets/images/app-background.png',
  './assets/images/carilirik-logo.png',
+ './assets/images/carilirik-logo.png.png',
+ './assets/icons/navigation/home.svg',
+ './assets/icons/navigation/koleksi.svg',
+ './assets/icons/navigation/search.svg',
+ './assets/icons/navigation/venue.svg',
+ './assets/icons/navigation/profile.svg',
+ './assets/icons/navigation/setting.svg',
+ './assets/icons/navigation/heart-filled.svg',
+ './assets/icons/navigation/heart-outline.svg',
 ];
 const CORE_CDN_ASSETS = [
  'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js'

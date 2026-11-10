@@ -45,38 +45,46 @@
 <div x-show="user" class="relative flex-1 flex flex-col min-h-0" :class="(tab==='home'||tab==='book')?'library-background':''" :style="(tab==='home'||tab==='book')?'':(tab==='results'?'background:#0d1114':'background:#181726')">
   <header x-show="tab!=='search'&&!folderSheet" class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
     <h1 x-show="tab!=='home'" class="text-[30px] font-bold leading-none" x-text="tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
-    <img x-show="tab==='home'" src="assets/images/carilirik-logo.png" alt="Carilirik" class="h-[38px] w-40%">
+    <div x-show="tab==='home'" class="flex items-center justify-between w-full">
+      <img src="assets/images/carilirik-logo.png.png" alt="Carilirik" class="h-[34px] w-auto">
+      <span class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center" aria-hidden="true"><img src="assets/icons/navigation/setting.svg" alt="" class="w-[26px] h-[26px]"></span>
+    </div>
     <button x-show="tab==='book'" @click="openFolderSheet()" class="text-white" aria-label="Tambah koleksi" x-html="ic('plus',32)"></button>
     <button x-show="tab==='results'" @click="closeResults()" class="text-white" aria-label="Tutup hasil" x-html="ic('x',30)"></button>
   </header>
 
   <div class="flex-1 min-h-0 relative">
     <!-- HOME -->
-    <div x-show="tab==='home'" class="h-full flex flex-col px-5 pb-4 sm:grid sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:grid-rows-[auto_auto_1fr] sm:gap-x-6 sm:px-7">
-      <p class="text-[13px] font-bold tracking-wide uppercase mt-3 mb-3 px-1 sm:col-start-1 sm:row-start-1">Terakhir dilihat</p>
-      <div class="rounded-[1.75rem] bg-[#1c1d21] px-5 py-4 flex items-center min-h-[72px] flex-shrink-0 sm:col-start-1 sm:row-start-2">
-        <template x-if="!lastView">
-          <div class="flex items-center text-[#6c6a85]"><span class="mr-4 flex-shrink-0" x-html="ic('mic',26)"></span><p class="text-[14px]">Belum ada lirik yang kamu nyanyikan.</p></div>
-        </template>
-        <template x-if="lastView">
-          <div class="flex items-center w-full">
-            <div class="flex-1 min-w-0"><p class="text-[17px] font-medium truncate" x-text="lastView.trackName"></p><p class="text-[13px] text-[#6c6a85] truncate" x-text="songMeta(lastView)"></p></div>
-            
-            <button @click="open(lastView)" class="w-10 h-10 rounded-xl bg-[#2a2b33] flex items-center justify-center ml-2 flex-shrink-0" aria-label="Buka lirik" x-html="ic('play',18)"></button>
-          </div>
-        </template>
+    <div x-show="tab==='home'" class="h-full flex flex-col px-4 pb-3 sm:grid sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:grid-rows-[auto_auto_1fr] sm:gap-x-6 sm:px-7">
+      <p class="text-[15px] font-medium mt-2 mb-3 px-1 sm:col-start-1 sm:row-start-1">Terakhir dilihat</p>
+      <div x-show="!lastView" class="min-h-[70px] rounded-2xl bg-[#191919] flex items-center justify-center px-4 sm:col-start-1 sm:row-start-2">
+        <p class="text-[13px] text-[#77778d]">Belum ada lirik yang dilihat</p>
       </div>
-      <p class="text-[13px] font-bold tracking-wide uppercase mt-7 mb-3 px-1 sm:col-start-2 sm:row-start-1 sm:mt-3">Leaderboard</p>
-      <div class="flex-1 min-h-0 rounded-3xl bg-[#1c1d21] overflow-y-auto sm:col-start-2 sm:row-start-2 sm:row-span-2">
-        <div x-show="ranked.length===0" class="h-full flex flex-col items-center justify-center text-center px-12 text-[#6c6a85]">
-          <span class="mb-4" x-html="ic('music',40)"></span>
-          <p class="text-[15px] leading-snug">Belum ada lirik yang pernah kamu nyanyikan.</p>
+      <template x-if="lastView">
+        <div class="min-h-[70px] rounded-2xl bg-[#3949a8] px-4 py-3 flex items-center sm:col-start-1 sm:row-start-2">
+          <div @click="open(lastView)" class="flex-1 min-w-0 cursor-pointer">
+            <p class="text-[14px] font-medium truncate" x-text="lastView.trackName"></p>
+            <p class="text-[12px] text-white/75 truncate" x-text="songMeta(lastView)"></p>
+          </div>
+          <button @click.stop="openSaveSheet(lastView)" class="w-8 h-8 ml-2 flex items-center justify-center flex-shrink-0" aria-label="Simpan ke koleksi">
+            <img :src="savedHas(lastView.id)?'assets/icons/navigation/heart-filled.svg':'assets/icons/navigation/heart-outline.svg'" alt="" class="w-[22px] h-[22px]">
+          </button>
+        </div>
+      </template>
+      <p class="text-[15px] font-medium mt-6 mb-3 px-1 sm:col-start-2 sm:row-start-1 sm:mt-2">Ranking</p>
+      <div class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-2 sm:col-start-2 sm:row-start-2 sm:row-span-2">
+        <div x-show="ranked.length===0" class="flex-1 min-h-[220px] flex flex-col items-center justify-center text-center px-8 text-[#77778d]">
+          <span class="mb-1" x-html="ic('music',28)"></span>
+          <p class="text-[13px] leading-snug">Belum ada lirik lagu yang dilihat</p>
         </div>
         <template x-for="(s,i) in ranked.slice(0,10)" :key="s.id">
-          <div @click="open(s)" class="flex items-center px-4 py-2.5 cursor-pointer">
-            <span class="w-8 text-[15px] font-bold" x-text="i+1"></span>
-            <div class="flex-1 min-w-0"><p class="text-[16px] leading-tight truncate" x-text="s.trackName"></p><p class="text-[14px] text-[#5f5c93] truncate" x-text="songMeta(s)"></p></div>
-            <span class="text-[13px] text-[#6c6a85] ml-2" x-text="s.openedCount+'x'"></span>
+          <div @click="open(s)" class="min-h-[76px] rounded-2xl bg-[#191919] flex items-center px-4 py-3 cursor-pointer flex-shrink-0">
+            <span class="w-8 text-[16px] font-medium" x-text="i+1"></span>
+            <div class="flex-1 min-w-0">
+              <p class="text-[17px] leading-tight truncate" x-text="s.trackName"></p>
+              <p class="text-[14px] text-[#77778d] truncate" x-text="songMeta(s)"></p>
+            </div>
+            <span class="ml-3 text-[16px] font-medium flex-shrink-0" x-text="(s.openedCount||0)+'x'"></span>
           </div>
         </template>
       </div>
@@ -94,7 +102,9 @@
         <template x-for="s in results" :key="s.id">
           <div class="flex items-center py-3.5">
             <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="songMeta(s)"></p></div>
-            <button @click="plusTap(s)" class="w-8 h-8 rounded-lg flex items-center justify-center ml-3 flex-shrink-0" :class="(addTarget?inTarget(s.id):savedHas(s.id))?'bg-[#3a48a2]':'bg-[#222432]'" x-html="ic('bookmark',16,addTarget?inTarget(s.id):savedHas(s.id))" aria-label="Simpan ke koleksi"></button>
+            <button @click="openSaveSheet(s)" class="w-8 h-8 flex items-center justify-center ml-3 flex-shrink-0" aria-label="Simpan ke koleksi">
+              <img :src="savedHas(s.id)?'assets/icons/navigation/heart-filled.svg':'assets/icons/navigation/heart-outline.svg'" alt="" class="w-[22px] h-[22px]">
+            </button>
             <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
           </div>
         </template>
@@ -150,12 +160,12 @@
   </div>
 
   <!-- NAV -->
-  <nav x-show="tab!=='results'&&tab!=='search'&&!folderSheet" class="bg-[#0d1114] flex items-center justify-around flex-shrink-0" style="height:calc(5rem + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)">
-    <button @click="go('home')" :class="tab==='home'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('home',22)"></span><span class="text-[11px] font-medium">Home</span></button>
-    <button @click="go('book')" :class="tab==='book'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('music',22)"></span><span class="text-[11px] font-medium">Koleksi</span></button>
-    <button @click="openSearch(null)" class="w-14 h-14 rounded-full flex items-center justify-center bg-[#3a48a2] text-white flex-shrink-0" x-html="ic('search',24)" aria-label="Cari lirik"></button>
-    <button @click="go('venue')" :class="tab==='venue'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('venue',22)"></span><span class="text-[11px] font-medium">Venue</span></button>
-    <button @click="go('profile')" :class="tab==='profile'?'text-white':'text-[#4a4d78]'" class="flex flex-col items-center gap-1 w-14"><span x-html="ic('user',22)"></span><span class="text-[11px] font-medium">Profile</span></button>
+  <nav x-show="tab!=='results'&&tab!=='search'&&!folderSheet" class="bg-[#0d1114] flex items-center justify-around flex-shrink-0" style="height:calc(4.5rem + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px)">
+    <button @click="go('home')" :class="tab==='home'?'text-white':'text-[#77778d]'" class="flex flex-col items-center gap-1 w-14"><img src="assets/icons/navigation/home.svg" alt="" class="w-[23px] h-[23px]" :class="tab==='home'?'opacity-100':'opacity-40'"><span class="text-[10px] font-medium">Home</span></button>
+    <button @click="go('book')" :class="tab==='book'?'text-white':'text-[#77778d]'" class="flex flex-col items-center gap-1 w-14"><img src="assets/icons/navigation/koleksi.svg" alt="" class="w-[23px] h-[23px]" :class="tab==='book'?'opacity-100':'opacity-40'"><span class="text-[10px] font-medium">Koleksi</span></button>
+    <button @click="openSearch(null)" class="w-12 h-12 rounded-full flex items-center justify-center bg-[#3a48a2] text-white flex-shrink-0" aria-label="Cari lirik"><img src="assets/icons/navigation/search.svg" alt="" class="w-6 h-6"></button>
+    <button @click="go('venue')" :class="tab==='venue'?'text-white':'text-[#77778d]'" class="flex flex-col items-center gap-1 w-14"><img src="assets/icons/navigation/venue.svg" alt="" class="w-[23px] h-[23px]" :class="tab==='venue'?'opacity-100':'opacity-40'"><span class="text-[10px] font-medium">Venue</span></button>
+    <button @click="go('profile')" :class="tab==='profile'?'text-white':'text-[#77778d]'" class="flex flex-col items-center gap-1 w-14"><img src="assets/icons/navigation/profile.svg" alt="" class="w-[23px] h-[23px]" :class="tab==='profile'?'opacity-100':'opacity-40'"><span class="text-[10px] font-medium">Profile</span></button>
   </nav>
 
   <div x-show="folderSheet && tab==='book'" class="absolute inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-end justify-center" @click.self="folderSheet=false">
@@ -258,7 +268,9 @@
   <div class="px-4 py-3.5 flex items-center gap-3 border-b border-white/5" style="overflow:hidden;transition:all .2s ease" :style="hideBar?'max-height:0;padding-top:0;padding-bottom:0;opacity:0;border-width:0':'max-height:6rem'">
     <button @click="close()" class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" x-html="ic('back',18)"></button>
     <div class="flex-1 min-w-0"><h3 class="font-semibold truncate" x-text="sel?.trackName"></h3><p class="text-xs text-[#8a89a6] truncate" x-text="songMeta(sel)"></p></div>
-    <button @click.stop="pickSong=sel" class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" :class="isSaved?'text-[#e5484d]':'text-white'" x-html="ic('bookmark',18,isSaved)" aria-label="Simpan ke koleksi"></button>
+    <button @click.stop="openSaveSheet(sel)" class="w-9 h-9 flex items-center justify-center flex-shrink-0" aria-label="Simpan ke koleksi">
+      <img :src="savedHas(sel?.id)?'assets/icons/navigation/heart-filled.svg':'assets/icons/navigation/heart-outline.svg'" alt="" class="w-[22px] h-[22px]">
+    </button>
   </div>
   <div x-show="cjk" class="px-4 py-2 bg-[#1b1a2e] flex items-center justify-end text-xs" style="overflow:hidden;transition:all .2s ease" :style="(hideBar&&!auto)?'max-height:0;padding-top:0;padding-bottom:0;opacity:0':'max-height:6rem'">
     

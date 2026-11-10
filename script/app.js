@@ -136,7 +136,7 @@ function pulse(){return{
   }
   this.folders=[...this.folders];this.sv('pl_folders',this.folders);
  },
- plusTap(s){if(this.addTarget)this.toggleTarget(s);else this.pickSong=s},
+ openSaveSheet(s){this.pickSong=s},
  closeResults(){this.tab='search'},
  get tName(){if(this.addTarget==='all')return 'Semua Lagu';const f=this.folders.find(x=>x.id===this.addTarget);return f?f.name:''},
  inTarget(id){
