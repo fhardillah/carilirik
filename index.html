@@ -46,7 +46,7 @@
   <header x-show="tab!=='search'&&!folderSheet" class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
     <h1 x-show="tab!=='home'" class="text-[30px] font-bold leading-none" x-text="tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
     <div x-show="tab==='home'" class="flex items-center justify-between w-full">
-      <img src="assets/images/carilirik-logo.png.png" alt="Carilirik" class="h-[34px] w-auto">
+      <img src="assets/images/carilirik-logo.png" alt="Carilirik" class="h-[34px] w-auto">
       <span class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center" aria-hidden="true"><img src="assets/icons/navigation/setting.svg" alt="" class="w-[26px] h-[26px]"></span>
     </div>
     <button x-show="tab==='book'" @click="openFolderSheet()" class="text-white" aria-label="Tambah koleksi" x-html="ic('plus',32)"></button>
