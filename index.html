@@ -42,7 +42,7 @@
 </section>
 
 <!-- APP -->
-<div x-show="user" class="relative flex-1 flex flex-col min-h-0" :style="(tab==='home'||tab==='book')?'background:radial-gradient(90% 36% at 100% 0%,#67adcf 0%,rgba(103,173,207,0) 100%),linear-gradient(180deg,#3d4fd8 0%,#2f4aa8 14%,#18204a 30%,#101216 48%,#101216 100%)':(tab==='results'?'background:#0d1114':'background:#181726')">
+<div x-show="user" class="relative flex-1 flex flex-col min-h-0" :class="(tab==='home'||tab==='book')?'library-background':''" :style="(tab==='home'||tab==='book')?'':(tab==='results'?'background:#0d1114':'background:#181726')">
   <header x-show="tab!=='search'&&!folderSheet" class="px-6 pt-6 pb-3 flex-shrink-0 flex items-center justify-between">
     <h1 class="font-bold leading-none" :class="tab==='home'?'text-[40px]':'text-[30px]'" x-text="tab==='home'?'Carilirik':tab==='book'?'Koleksi':tab==='venue'?'Venue':tab==='profile'?'Profile':'Hasil pencarian'"></h1>
     <button x-show="tab==='book'" @click="openFolderSheet()" class="text-white" aria-label="Tambah koleksi" x-html="ic('plus',32)"></button>

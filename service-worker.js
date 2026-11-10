@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'carilirik-v11';
+const CACHE_VERSION = 'carilirik-v12';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
@@ -8,6 +8,7 @@ const APP_ASSETS = [
  './css/style.css',
  './script/app.js',
  './assets/icons/pulse.svg',
+ './assets/images/app-background.png',
 ];
 const CORE_CDN_ASSETS = [
  'https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js'
