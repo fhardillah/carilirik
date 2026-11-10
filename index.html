@@ -142,18 +142,18 @@
     </div>
 
     <!-- PENCARIAN -->
-    <div x-show="tab==='search'" class="absolute inset-0 z-[35] flex flex-col px-6" @focusin="focusIn()" @focusout="focusOut()" style="background:radial-gradient(70% 38% at 8% 12%,#9a9ce0 0%,rgba(154,156,224,0) 100%),radial-gradient(75% 42% at 100% 72%,#5a95b9 0%,rgba(90,149,185,0) 100%),radial-gradient(70% 34% at 0% 88%,#3c40a6 0%,rgba(60,64,166,0) 100%),linear-gradient(160deg,#2d3a76 0%,#35418c 100%)">
+    <div x-show="tab==='search'" class="search-background absolute inset-0 z-[35] flex flex-col px-6" @focusin="focusIn()" @focusout="focusOut()">
       <div class="pt-6 pb-3 flex items-center justify-end gap-5 flex-shrink-0">
         <button @click="openHist()" class="w-9 h-9 flex items-center justify-center text-white" x-html="ic('history',28)" aria-label="Riwayat pencarian"></button>
         <button @click="closeSearch()" class="w-9 h-9 flex items-center justify-center text-white" x-html="ic('x',30)" aria-label="Tutup pencarian"></button>
       </div>
       <form @submit.prevent="submitSearch()" class="flex-1 min-h-0 flex flex-col overflow-y-auto w-full max-w-[640px] self-center">
         <div class="flex-1 min-h-0 flex flex-col justify-evenly py-4">
-          <div class="text-center">
+          <div class="w-full max-w-[500px] self-center text-center">
             <label for="search-title" class="block text-[16px] font-medium">Judul Lagu</label>
             <textarea id="search-title" x-ref="tInput" x-model="qTitle" :rows="qTitle.length?1:2" @input="fit($el)" placeholder="Cari Judul Lagu" @keydown.enter.prevent="submitSearch()" class="w-full bg-transparent text-center text-[52px] font-bold leading-[1.08] resize-none mt-2 placeholder:font-bold placeholder:text-white/55"></textarea>
           </div>
-          <div class="text-center">
+          <div class="w-full max-w-[500px] self-center text-center">
             <label for="search-artist" class="block text-[16px] font-medium">Penyanyi</label>
             <input id="search-artist" x-model="qArtist" type="text" placeholder="Semua" class="w-full bg-transparent text-center text-[52px] font-bold leading-[1.1] mt-2 placeholder:font-bold placeholder:text-white/55">
           </div>

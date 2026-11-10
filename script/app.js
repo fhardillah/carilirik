@@ -62,7 +62,6 @@ function pulse(){return{
   if(this.tab!=='search')this.searchReturnTab=this.tab;
   if(t!==undefined)this.addTarget=t;
   this.folderSheet=false;this.histOpen=false;this.tab='search';this.kb=false;
-  this.$nextTick(()=>{const el=this.$refs.tInput;if(el){this.fit(el);el.focus()}});
  },
  closeSearch(){this.tab=this.searchReturnTab;this.addTarget=null;this.kb=false},
  fit(el){el.style.height='auto';if(this.qTitle.length)el.style.height=el.scrollHeight+'px'},

@@ -12,5 +12,6 @@ input,textarea{outline:none}
 input::placeholder{color:#7d7c9e;font-style:italic}
 .grad{background:linear-gradient(180deg,#4a43a6 0%,#8b8fdc 26%,#3b2b7c 52%,#0a0612 76%,#000 100%)}
 .library-background{background-color:#0d1114;background-image:url('../assets/images/app-background.png');background-position:center top;background-repeat:no-repeat;background-size:100% auto}
+.search-background{background:#0d1114 url('../assets/images/app-background.png') center/cover no-repeat}
 .app-shell{max-width:480px}
 @media (min-width:640px){.app-shell{max-width:800px}}
