@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'carilirik-v25';
+const CACHE_VERSION = 'carilirik-v26';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
