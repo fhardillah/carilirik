@@ -39,7 +39,7 @@
         <button type="button" @click="authOpen='';authError='';authMessage=''" class="w-8 h-8 flex items-center justify-center" aria-label="Tutup login" x-html="ic('x',22)"></button>
       </div>
       <input x-show="authOpen==='create'" x-model="nameInput" type="text" placeholder="Username" autocomplete="username" maxlength="24" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
-      <input x-model="emailInput" type="text" inputmode="email" placeholder="Email" autocomplete="email" maxlength="254" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
+      <input x-model="emailInput" type="text" inputmode="email" placeholder="Email" autocomplete="email" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
       <input x-model="passwordInput" type="password" placeholder="Password (minimal 8 karakter)" :autocomplete="authOpen==='create'?'new-password':'current-password'" maxlength="72" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
       <p x-show="authError" role="alert" class="text-[13px] text-[#f38ba8]" x-text="authError"></p>
       <p x-show="authMessage" role="status" class="text-[13px] text-[#a6e3a1]" x-text="authMessage"></p>
