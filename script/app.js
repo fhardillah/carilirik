@@ -81,6 +81,8 @@ function pulse(){return{
   try{
    if(this.authOpen==='create'){
     const username=this.nameInput.trim();
+    const emailAvailable=await this.supabaseRequest('/rest/v1/rpc/is_email_available',{method:'POST',body:{candidate_email:email}});
+    if(!emailAvailable){this.authError='Email sudah digunakan.';return}
     const available=await this.supabaseRequest('/rest/v1/rpc/is_username_available',{method:'POST',body:{candidate_username:username}});
     if(!available){this.authError='Username sudah digunakan.';return}
     const result=await this.supabaseRequest('/auth/v1/signup',{method:'POST',body:{email,password:this.passwordInput,data:{username}}});
@@ -94,10 +96,10 @@ function pulse(){return{
    this.passwordInput='';
   }catch(error){
    console.error('Supabase authentication failed:',error);const message=error.message||'';
-   if(error.status===404&&/is_username_available/i.test(message)){this.authError='Setup database Supabase belum selesai. Jalankan supabase/schema.sql di Supabase Dashboard → SQL Editor, lalu coba daftar lagi.'}
+   if(error.status===404&&/is_(username|email)_available/i.test(message)){this.authError='Setup database Supabase belum lengkap. Jalankan versi terbaru supabase/schema.sql di Supabase Dashboard → SQL Editor, lalu coba lagi.'}
    else if(error.status===404&&/account_data/i.test(message)){this.authError='Setup sinkronisasi akun belum selesai. Jalankan SQL terbaru dari supabase/schema.sql di Supabase SQL Editor.'}
-   else if(/profiles_username_lower_key|duplicate key value.*username/i.test(message)){this.authError='Username sudah digunakan.'}
-   else if(this.authOpen==='create'&&/email_exists|email.*(already|registered|exist)|already registered/i.test(message)){this.authError='Email sudah digunakan.'}
+   else if(/profiles_username_lower_key|duplicate key value.*username|username.*already (exists|taken|registered)/i.test(message)){this.authError='Username sudah digunakan.'}
+   else if(this.authOpen==='create'&&/email_exists|user_already_exists|email.*(already|registered|exist)|already registered|user already exists/i.test(message)){this.authError='Email sudah digunakan.'}
    else if(this.authOpen==='login'&&/invalid login credentials|invalid_credentials|user not found/i.test(message)){this.authError='Email/password salah atau akun belum terdaftar. Silakan daftar dulu.'}
    else{this.authError=message||'Autentikasi gagal. Coba lagi.'}
   }finally{this.authBusy=false}

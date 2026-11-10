@@ -18,11 +18,30 @@ as $$
     select 1
     from public.profiles
     where lower(username) = lower(candidate_username)
+  ) and not exists (
+    select 1
+    from auth.users
+    where lower(coalesce(raw_user_meta_data ->> 'username', '')) = lower(candidate_username)
+  );
+$$;
+
+create or replace function public.is_email_available(candidate_email text)
+returns boolean
+language sql
+security definer
+set search_path = ''
+as $$
+  select not exists (
+    select 1
+    from auth.users
+    where lower(email) = lower(btrim(candidate_email))
   );
 $$;
 
 revoke all on function public.is_username_available(text) from public;
 grant execute on function public.is_username_available(text) to anon, authenticated;
+revoke all on function public.is_email_available(text) from public;
+grant execute on function public.is_email_available(text) to anon, authenticated;
 
 alter table public.profiles enable row level security;
 
