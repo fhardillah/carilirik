@@ -145,6 +145,7 @@
         <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-[#7b84ee] to-[#f5c2e7] flex items-center justify-center text-[#181726] font-bold text-3xl" x-text="(user||'?').charAt(0).toUpperCase()"></div>
         <p class="mt-3 text-lg font-semibold" x-text="user"></p>
         <p class="text-xs text-[#8a89a6]" x-text="ranked.length+' lagu di leaderboard · '+saved.length+' di Koleksi'"></p>
+        <p x-show="syncError" role="alert" class="mt-3 text-left text-xs text-[#f38ba8]" x-text="syncError"></p>
         <button @click="logout()" class="mt-5 w-full py-3 rounded-full bg-[#c0403c] font-semibold text-[15px]">Logout</button>
       </div>
     </div>
