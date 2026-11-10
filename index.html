@@ -61,7 +61,7 @@
         <p class="text-[13px] text-[#77778d]">Belum ada lirik yang dilihat</p>
       </div>
       <template x-if="lastView">
-        <div class="min-h-[70px] rounded-2xl bg-[#3949a8] px-4 py-3 flex items-center sm:col-start-1 sm:row-start-2">
+        <div class="min-h-[70px] rounded-2xl bg-white/10 border border-white px-4 py-3 flex items-center sm:col-start-1 sm:row-start-2">
           <div @click="open(lastView)" class="flex-1 min-w-0 cursor-pointer">
             <p class="text-[14px] font-medium truncate" x-text="lastView.trackName"></p>
             <p class="text-[12px] text-white/75 truncate" x-text="songMeta(lastView)"></p>
@@ -78,7 +78,7 @@
           <p class="text-[13px] leading-snug">Belum ada lirik lagu yang dilihat</p>
         </div>
         <template x-for="(s,i) in ranked.slice(0,10)" :key="s.id">
-          <div @click="open(s)" class="min-h-[76px] rounded-2xl bg-[#191919] flex items-center px-4 py-3 cursor-pointer flex-shrink-0">
+          <div @click="open(s)" class="min-h-[76px] rounded-2xl bg-black/40 flex items-center px-4 py-3 cursor-pointer flex-shrink-0">
             <span class="w-8 text-[16px] font-medium" x-text="i+1"></span>
             <div class="flex-1 min-w-0">
               <p class="text-[17px] leading-tight truncate" x-text="s.trackName"></p>
