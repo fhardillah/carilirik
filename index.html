@@ -196,7 +196,7 @@
     <div class="px-6 pt-6 pb-4 flex items-center gap-4 flex-shrink-0">
       <button @click="closeFolder()" class="flex-shrink-0" x-html="ic('back',28)" aria-label="Kembali"></button>
       <h2 class="text-[30px] font-bold leading-none flex-1 truncate" x-text="fName"></h2>
-      <button x-show="fview!=='all'" @click="delAsk=true" class="text-[#d0343c]" x-html="ic('trash',26)" aria-label="Hapus koleksi"></button>
+      <button x-show="fview!=='all'" @click="folderMenu=true" class="flex-shrink-0" x-html="ic('more',26)" aria-label="Opsi koleksi"></button>
     </div>
     <div class="flex-1 min-h-0 overflow-y-auto px-6 pb-28">
       <div x-show="fSongs.length===0" class="py-24 text-center text-[#6c6a85] text-[14px]">Belum ada lagu. Tekan tombol cari untuk menambahkan.</div>
@@ -234,6 +234,32 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div x-show="folderMenu&&fview&&fview!=='all'" x-transition.opacity class="absolute inset-0 z-[70] bg-black/50 backdrop-blur-md flex items-end justify-center" @click.self="folderMenu=false">
+    <div class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-5" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-[18px] font-medium" x-text="fName"></h3>
+        <button @click="folderMenu=false" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup menu"></button>
+      </div>
+      <button @click="folderMenu=false;delAsk=true" class="w-full py-4 text-left border-b border-white/10 text-[#e66b72]">Hapus</button>
+      <button @click="openRenameSheet()" class="w-full py-4 text-left">Rename</button>
+    </div>
+  </div>
+
+  <div x-show="renameSheet" x-transition.opacity class="absolute inset-0 z-[71] bg-black/60 backdrop-blur-md flex items-end justify-center" @click.self="renameSheet=false;renameErr=''">
+    <form @submit.prevent="renameFolder()" class="w-full max-w-[560px] rounded-t-[2rem] bg-[#21202f] px-6 pt-6" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
+      <div class="flex items-center justify-between">
+        <h3 class="text-[18px] font-medium">Rename koleksi</h3>
+        <button type="button" @click="renameSheet=false;renameErr=''" class="w-8 h-8 flex items-center justify-center" x-html="ic('x',24)" aria-label="Tutup rename"></button>
+      </div>
+      <input x-model="renameName" maxlength="30" type="text" placeholder="Nama koleksi" class="w-full mt-6 rounded-2xl bg-[#2d2c3d] px-5 py-4 text-[15px] placeholder:not-italic">
+      <p x-show="renameErr" role="alert" class="text-[12px] text-[#f38ba8] mt-2 px-1" x-text="renameErr"></p>
+      <div class="flex gap-3 mt-5">
+        <button type="button" @click="renameSheet=false;renameErr=''" class="flex-1 py-3 rounded-xl bg-[#2d2c3d]">Batal</button>
+        <button type="submit" class="flex-1 py-3 rounded-xl bg-[#7b84ee] font-semibold">Simpan</button>
+      </div>
+    </form>
   </div>
 
   <!-- SIMPAN KE KOLEKSI -->

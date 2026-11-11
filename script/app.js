@@ -1,5 +1,5 @@
 const P={
- trash:'<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/>',
+ more:'<circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>',
  minus:'<path d="M5 12h14"/>',
  mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>',
  plus:'<path d="M12 5v14M5 12h14"/>',
@@ -45,7 +45,7 @@ const ACCOUNT_STATE_KEYS=['pl_saved','pl_folders','pl_hist','pl_last','pl_rank',
 function pulse(){return{
  user:'',nameInput:'',emailInput:'',passwordInput:'',authOpen:'',authError:'',authMessage:'',authBusy:false,authSession:null,accountId:'',accountSyncTimer:null,accountSyncQueue:Promise.resolve(),syncError:'',menu:false,tab:'home',homeQuery:'',
  qTitle:'',qArtist:'',results:[],loading:false,searched:false,offline:false,
- ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
+ ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',renameSheet:false,renameName:'',renameErr:'',folderMenu:false,fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
  db:[
   ...["Rolling In The Deep", "To Be Loved", "Someone Like You", "He Won't Go", "Runaway", "Water Under The Bridge", "Skyfall", "Hello", "Easy On Me", "Set Fire To The Rain", "Chasing Pavements", "Make You Feel My Love", "Oh My God", "I Drink Wine", "Cold Shoulder", "River Lea", "Cry Your Heart Out", "Painting Pictures", "Hometown Glory", "One And Only", "My Same", "Daydreamer", "Tired", "Promise This", "Woman Like Me", "Turning Tables", "Send My Love (To Your New Lover)", "When We Were Young"].map((t,i)=>({id:'a'+i,trackName:t,artistName:'Adele',plainLyrics:PH})),
   ...['Good Riddance','Jesus Of Suburbia','Basket Case','Know Your Enemy','American Idiot','Last Night On Earth','Still Breathing','Boulevard Of Broken Dreams','Stray Hearts'].map((t,i)=>({id:'g'+i,trackName:t,artistName:'Green Day',plainLyrics:PH})),
@@ -148,15 +148,17 @@ function pulse(){return{
   if(n.toLowerCase()==='semua lagu'||this.folders.some(f=>f.name.toLowerCase()===n.toLowerCase())){this.folderErr='Nama folder sudah dipakai.';return}
   this.folders=[...this.folders,{id:'f'+Date.now(),name:n,ids:[]}];this.sv('pl_folders',this.folders);this.folderSheet=false;
  },
- openFolder(id){this.fview=id;this.pick=false;this.rmSong=null;this.delAsk=false},
- closeFolder(){this.fview=null;this.pick=false},
+ openRenameSheet(){const folder=this.folders.find(x=>x.id===this.fview);if(!folder)return;this.renameName=folder.name;this.renameErr='';this.folderMenu=false;this.renameSheet=true},
+ renameFolder(){const name=this.renameName.trim();if(!name){this.renameErr='Nama koleksi tidak boleh kosong.';return}if(name.toLowerCase()==='semua lagu'||this.folders.some(f=>f.id!==this.fview&&f.name.toLowerCase()===name.toLowerCase())){this.renameErr='Nama koleksi sudah dipakai.';return}this.folders=this.folders.map(f=>f.id===this.fview?{...f,name}:f);this.sv('pl_folders',this.folders);this.renameSheet=false;this.renameErr=''},
+ openFolder(id){this.fview=id;this.pick=false;this.rmSong=null;this.delAsk=false;this.folderMenu=false;this.renameSheet=false},
+ closeFolder(){this.fview=null;this.pick=false;this.folderMenu=false;this.renameSheet=false;this.renameErr=''},
  inFolder(id){const f=this.folders.find(x=>x.id===this.fview);return !!f&&f.ids.includes(id)},
  toggleInFolder(song){
   const f=this.folders.find(x=>x.id===this.fview);if(!f)return;
   f.ids=f.ids.includes(song.id)?f.ids.filter(i=>i!==song.id):[...f.ids,song.id];
   this.folders=[...this.folders];this.sv('pl_folders',this.folders);
  },
- deleteFolder(){this.folders=this.folders.filter(x=>x.id!==this.fview);this.sv('pl_folders',this.folders);this.delAsk=false;this.closeFolder()},
+ deleteFolder(){this.folders=this.folders.filter(x=>x.id!==this.fview);this.sv('pl_folders',this.folders);this.delAsk=false;this.folderMenu=false;this.closeFolder()},
  confirmRemove(){
   const s=this.rmSong;this.rmSong=null;if(!s)return;
   if(this.fview==='all')this.toggleSaved(s);else this.removeFromFolder(s);
