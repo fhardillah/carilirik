@@ -19,15 +19,8 @@
 <div class="app-shell relative w-full h-full sm:rounded-[2rem] overflow-hidden bg-black flex flex-col shadow-2xl border border-white/5">
 
 <!-- SPLASH -->
-<section x-show="!user" class="absolute inset-0 z-30 bg-[#14132a] flex flex-col">
-  <div class="absolute inset-0 overflow-hidden">
-    <div class="grid grid-cols-4 gap-2 w-[135%] -ml-[15%] -mt-10 opacity-70" style="transform:rotate(-8deg)">
-      <template x-for="i in 28" :key="i"><div class="aspect-square rounded-md" :style="'background:linear-gradient(135deg,hsl('+((i*53)%360)+' 50% '+(22+(i*11)%30)+'%),hsl('+((i*53+40)%360)+' 45% 15%))'"></div></template>
-    </div>
-    <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(20,19,42,0) 15%,rgba(20,19,42,.85) 60%,#14132a 78%)"></div>
-  </div>
+<section x-show="!user" class="auth-background absolute inset-0 z-30 flex flex-col">
   <div class="relative mt-auto px-6 pb-8 text-center">
-    <h1 class="text-[56px] font-bold text-[#7b84ee] mb-14 leading-none">Carilirik</h1>
     <button @click="openAuth('login')" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Login</button>
     <button @click="openAuth('create')" class="mt-5 text-[#7b84ee] text-[15px]">Create account</button>
     <p x-show="!authOpen&&authError" role="alert" class="mt-4 text-[13px] text-[#f38ba8]" x-text="authError"></p>

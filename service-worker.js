@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'carilirik-v29';
+const CACHE_VERSION = 'carilirik-v30';
 const APP_CACHE = `${CACHE_VERSION}-app`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_ASSETS = [
@@ -9,6 +9,7 @@ const APP_ASSETS = [
  './script/app.js',
  './assets/icons/pulse.svg',
  './assets/images/app-background.png',
+ './assets/images/login-background.png',
  './assets/images/carilirik-logo.png',
  './assets/icons/navigation/home.svg',
  './assets/icons/navigation/koleksi.svg',
