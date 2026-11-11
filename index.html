@@ -21,8 +21,8 @@
 <!-- SPLASH -->
 <section x-show="!user" class="auth-background absolute inset-0 z-30 flex flex-col">
   <div class="relative mt-auto px-6 pb-8 text-center">
-    <button @click="openAuth('login')" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Login</button>
-    <button @click="openAuth('create')" class="create-account-link mt-5 text-[15px]">Create account</button>
+    <button @click="openAuth('login')" class="w-full py-3.5 rounded-xl bg-[#7b84ee] font-medium text-white">Masuk</button>
+    <button @click="openAuth('create')" class="create-account-link mt-5 text-[15px]">Buat Akun</button>
     <p x-show="!authOpen&&authError" role="alert" class="mt-4 text-[13px] text-[#f38ba8]" x-text="authError"></p>
   </div>
   <div x-show="authOpen" x-transition.opacity class="absolute inset-0 z-10 bg-black/60 flex items-end justify-center" @click.self="authOpen=''">
