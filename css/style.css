@@ -9,6 +9,7 @@ body{background:#0b0b14;color:#fff;font-family:'Silka',sans-serif;padding-top:en
 [x-cloak]{display:none!important}
 ::-webkit-scrollbar{width:0}
 input,textarea{outline:none}
+input:focus::placeholder,textarea:focus::placeholder{opacity:0}
 input::placeholder{color:#7d7c9e;font-style:italic}
 .grad{background:linear-gradient(180deg,#4a43a6 0%,#8b8fdc 26%,#3b2b7c 52%,#0a0612 76%,#000 100%)}
 .library-background{background-color:#0d1114;background-image:url('../assets/images/app-background.png');background-position:center top;background-repeat:no-repeat;background-size:100% auto}
