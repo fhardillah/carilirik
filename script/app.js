@@ -44,7 +44,7 @@ const SUPABASE_PUBLISHABLE_KEY='sb_publishable_RrweVUgPdmz6LwGl5QK-yA_RixjKdP1';
 const ACCOUNT_STATE_KEYS=['pl_saved','pl_folders','pl_hist','pl_last','pl_rank','pl_prefs'];
 function pulse(){return{
  user:'',nameInput:'',emailInput:'',passwordInput:'',authOpen:'',authError:'',authMessage:'',authBusy:false,authSession:null,accountId:'',accountSyncTimer:null,accountSyncQueue:Promise.resolve(),syncError:'',menu:false,tab:'home',homeQuery:'',
- qTitle:'',qArtist:'',results:[],loading:false,searched:false,offline:false,
+ qTitle:'',qArtist:'',results:[],loading:false,loadingMore:false,hasMoreResults:false,loadMoreError:'',searchQueries:[],searchQueryIndex:0,searched:false,offline:false,
  ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',renameSheet:false,renameName:'',renameErr:'',folderMenu:false,fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
  db:[
   ...["Rolling In The Deep", "To Be Loved", "Someone Like You", "He Won't Go", "Runaway", "Water Under The Bridge", "Skyfall", "Hello", "Easy On Me", "Set Fire To The Rain", "Chasing Pavements", "Make You Feel My Love", "Oh My God", "I Drink Wine", "Cold Shoulder", "River Lea", "Cry Your Heart Out", "Painting Pictures", "Hometown Glory", "One And Only", "My Same", "Daydreamer", "Tired", "Promise This", "Woman Like Me", "Turning Tables", "Send My Love (To Your New Lover)", "When We Were Young"].map((t,i)=>({id:'a'+i,trackName:t,artistName:'Adele',plainLyrics:PH})),
@@ -211,18 +211,52 @@ function pulse(){return{
  async search(){
   const t=this.qTitle.trim().toLowerCase(),a=this.qArtist.trim().toLowerCase();
   if(!t&&!a)return;
-  this.loading=true;this.searched=true;this.results=[];this.offline=false;this.prevTab=this.tab==='results'?this.prevTab:(this.tab==='search'?this.searchReturnTab:this.tab);this.tab='results';this.lastQ={t:this.qTitle.trim(),a:this.qArtist.trim()};
+  this.loading=true;this.loadingMore=false;this.hasMoreResults=false;this.loadMoreError='';this.searched=true;this.results=[];this.offline=false;this.prevTab=this.tab==='results'?this.prevTab:(this.tab==='search'?this.searchReturnTab:this.tab);this.tab='results';this.lastQ={t:this.qTitle.trim(),a:this.qArtist.trim()};
   const local=this.db.filter(i=>{const tn=i.trackName.toLowerCase(),an=i.artistName.toLowerCase();return t&&!a?(tn.includes(t)||an.includes(t)):(!t||tn.includes(t))&&(!a||an.includes(a))});
+  const primary=t&&a?`track_name=${encodeURIComponent(this.qTitle.trim())}&artist_name=${encodeURIComponent(this.qArtist.trim())}`:`q=${encodeURIComponent((this.qTitle||this.qArtist).trim())}`;
+  const variants=t&&a?[
+   `track_name=${encodeURIComponent(this.qTitle.trim())}`,
+   `artist_name=${encodeURIComponent(this.qArtist.trim())}`
+  ]:t?[
+   `track_name=${encodeURIComponent(this.qTitle.trim())}`
+  ]:[
+   `artist_name=${encodeURIComponent(this.qArtist.trim())}`
+  ];
+  this.searchQueries=[...new Set([primary,...variants])];
+  this.searchQueryIndex=1;
   try{
-   let u='https://lrclib.net/api/search?';
-   if(t&&a)u+='track_name='+encodeURIComponent(this.qTitle.trim())+'&artist_name='+encodeURIComponent(this.qArtist.trim());
-   else u+='q='+encodeURIComponent((this.qTitle||this.qArtist).trim());
-   const r=await fetch(u);if(!r.ok)throw 0;
+   const r=await fetch(`https://lrclib.net/api/search?${this.searchQueries[0]}`);if(!r.ok)throw 0;
    const d=await r.json();
-   this.results=d.map(x=>({id:'l'+x.id,trackName:x.trackName||x.name||'Unknown',artistName:x.artistName||'Unknown',albumName:x.albumName||'',plainLyrics:x.plainLyrics||(x.syncedLyrics?x.syncedLyrics.replace(/\[\d+:\d+(\.\d+)?\]\s?/g,'').trim():'Lirik tidak tersedia.')}));
-  }catch(e){this.results=local;this.offline=true}
-  this.loading=false;
+   this.results=this.mapSearchResults(d);
+   while(!this.results.length&&this.searchQueryIndex<this.searchQueries.length){
+    const response=await fetch(`https://lrclib.net/api/search?${this.searchQueries[this.searchQueryIndex]}`);
+    if(!response.ok)throw new Error(`Pencarian tambahan gagal (${response.status}).`);
+    this.results=this.mapSearchResults(await response.json());this.searchQueryIndex++;
+   }
+   this.hasMoreResults=this.searchQueryIndex<this.searchQueries.length;
+  }catch(e){this.results=local;this.offline=true;this.hasMoreResults=false}
+  finally{this.loading=false}
  },
+ mapSearchResults(records){return records.map(x=>({id:'l'+x.id,trackName:x.trackName||x.name||'Unknown',artistName:x.artistName||'Unknown',albumName:x.albumName||'',plainLyrics:x.plainLyrics||(x.syncedLyrics?x.syncedLyrics.replace(/\[\d+:\d+(\.\d+)?\]\s?/g,'').trim():'Lirik tidak tersedia.')}))},
+ async loadMoreResults(){
+  if(this.loading||this.loadingMore||!this.hasMoreResults)return;
+  this.loadingMore=true;this.loadMoreError='';
+  try{
+   while(this.searchQueryIndex<this.searchQueries.length){
+    const query=this.searchQueries[this.searchQueryIndex];
+    const response=await fetch(`https://lrclib.net/api/search?${query}`);
+    if(!response.ok)throw new Error(`Pencarian tambahan gagal (${response.status}).`);
+    const records=this.mapSearchResults(await response.json());
+    this.searchQueryIndex++;
+    const known=new Set(this.results.map(song=>song.id));
+    const additions=records.filter(song=>!known.has(song.id));
+    if(additions.length){this.results=[...this.results,...additions];break}
+   }
+   this.hasMoreResults=this.searchQueryIndex<this.searchQueries.length;
+  }catch(error){console.error('Could not load more search results:',error);this.loadMoreError='Gagal memuat hasil tambahan. Coba lagi.'}
+  finally{this.loadingMore=false}
+ },
+ loadMoreOnScroll(event){const element=event.target;if(element.scrollHeight-element.scrollTop-element.clientHeight<180)this.loadMoreResults()},
  open(s){
   this.lastView={id:s.id,trackName:s.trackName,artistName:s.artistName,albumName:s.albumName||'',plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics};this.sv('pl_last',this.lastView);
   const f=this.db.find(d=>d.id===s.id);
