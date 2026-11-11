@@ -28,7 +28,7 @@
   <div x-show="authOpen" x-transition.opacity class="absolute inset-0 z-10 bg-black/60 flex items-end justify-center" @click.self="authOpen=''">
     <form @submit.prevent="login()" class="w-full max-w-[560px] rounded-t-3xl bg-[#1b1a2e] p-6 space-y-4" style="padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px))">
       <div class="flex items-center justify-between">
-        <h2 class="text-lg font-semibold" x-text="authOpen==='create'?'Buat akun':'Login'"></h2>
+        <h2 class="text-lg font-semibold" x-text="authOpen==='create'?'Buat akun':'Masuk'"></h2>
         <button type="button" @click="authOpen='';authError='';authMessage=''" class="w-8 h-8 flex items-center justify-center" aria-label="Tutup login" x-html="ic('x',22)"></button>
       </div>
       <input x-show="authOpen==='create'" x-model="nameInput" type="text" placeholder="Username" autocomplete="username" maxlength="24" class="w-full px-4 py-3 rounded-xl bg-[#25243d] text-sm">
