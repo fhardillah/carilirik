@@ -113,7 +113,6 @@
             <button @click="openSaveSheet(s)" class="w-8 h-8 flex items-center justify-center ml-3 flex-shrink-0" aria-label="Simpan ke koleksi">
               <img :src="savedHas(s.id)?'assets/icons/navigation/heart-filled.svg':'assets/icons/navigation/heart-outline.svg'" alt="" class="w-[22px] h-[22px]">
             </button>
-            <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
           </div>
         </template>
       </div>
@@ -205,7 +204,6 @@
         <div class="flex items-center py-3">
           <div class="flex-1 min-w-0 cursor-pointer" @click="open(s)"><p class="text-[18px] leading-tight" x-text="s.trackName"></p><p class="text-[14px] text-[#5f6290] truncate" x-text="songMeta(s)"></p></div>
           <button @click="rmSong=s" class="w-8 h-8 rounded-lg bg-[#222432] text-[#7d7f9f] flex items-center justify-center ml-3 flex-shrink-0" x-html="ic('minus',14)" aria-label="Keluarkan dari koleksi"></button>
-          <button @click="open(s)" class="w-8 h-8 rounded-lg bg-[#222432] flex items-center justify-center ml-2 flex-shrink-0" x-html="ic('play',14)" aria-label="Buka lirik"></button>
         </div>
       </template>
     </div>
@@ -308,7 +306,7 @@
       <button @click="setSpeed(-1)" class="w-7 h-8 rounded-lg bg-[#1E2122] text-[#b9bce8]" aria-label="Lebih lambat">−</button>
       <span class="w-8 text-center text-[11px] text-[#8a89a6]" x-text="speed+'x'"></span>
       <button @click="setSpeed(1)" class="w-7 h-8 rounded-lg bg-[#1E2122] text-[#b9bce8]" aria-label="Lebih cepat">+</button>
-      <button @click="toggleAuto()" :class="auto?'bg-[#7b84ee]':'bg-[#1E2122] text-[#b9bce8]'" class="h-8 px-3 rounded-lg flex items-center gap-1.5 text-[12px] font-medium"><span x-html="ic(auto?'pause':'play',14,!auto)"></span><span x-text="auto?'Pause':'Auto'"></span></button>
+      <button @click="toggleAuto()" :class="auto?'bg-[#7b84ee]':'bg-[#1E2122] text-[#b9bce8]'" class="h-8 px-3 rounded-lg flex items-center text-[12px] font-medium" x-text="auto?'Pause':'Auto'"></button>
     </div>
   </div>
   <div x-ref="lyr" @scroll.passive="onScroll($event)" @touchstart.passive="stopAuto()" @wheel.passive="stopAuto()" class="flex-1 overflow-y-auto p-6 pb-32 text-center"><div class="whitespace-pre-line leading-relaxed select-text" :style="'font-size:'+fs+'px'" x-text="shown"></div></div>

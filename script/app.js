@@ -14,8 +14,6 @@ const P={
  user:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M6.2 18.5a7 7 0 0 1 11.6 0"/>',
  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
  pen:'<path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 2 22l1.5-5.5z"/>',
- play:'<path d="M7 4v16l13-8z"/>',
- pause:'<path d="M8 5v14M16 5v14"/>',
  back:'<path d="m15 18-6-6 6-6"/>',
  bookmark:'<path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
  tick:'<path d="m5 12 4 4L19 6"/>',
