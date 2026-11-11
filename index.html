@@ -37,7 +37,7 @@
       <p x-show="authError" role="alert" class="text-[13px] text-[#f38ba8]" x-text="authError"></p>
       <p x-show="authMessage" role="status" class="text-[13px] text-[#a6e3a1]" x-text="authMessage"></p>
       <button type="submit" :disabled="authBusy" class="w-full py-3 rounded-xl bg-[#7b84ee] font-medium disabled:opacity-50" x-text="authBusy?'Memproses…':authOpen==='create'?'Buat akun':'Masuk'"></button>
-      <button type="button" @click="openAuth(authOpen==='create'?'login':'create')" class="w-full text-[13px] text-[#b8b8d0]" x-text="authOpen==='create'?'Sudah punya akun? Masuk':'Belum punya akun? Daftar'"></button>
+      <button type="button" @click="openAuth(authOpen==='create'?'login':'create')" class="w-full text-[13px] text-[#b8b8d0]" x-text="authOpen==='create'?'Sudah punya akun? Masuk':'Belum punya akun? Buat Akun'"></button>
     </form>
   </div>
 </section>
