@@ -45,7 +45,7 @@ const ACCOUNT_STATE_KEYS=['pl_saved','pl_folders','pl_hist','pl_last','pl_rank',
 function pulse(){return{
  user:'',nameInput:'',emailInput:'',passwordInput:'',authOpen:'',authError:'',authMessage:'',authBusy:false,authSession:null,accountId:'',accountSyncTimer:null,accountSyncQueue:Promise.resolve(),syncError:'',menu:false,tab:'home',homeQuery:'',
  qTitle:'',qArtist:'',results:[],loading:false,loadingMore:false,hasMoreResults:false,loadMoreError:'',searchQueries:[],searchQueryIndex:0,searched:false,offline:false,
- ranked:[],saved:[],sel:null,dwell:0,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',renameSheet:false,renameName:'',renameErr:'',folderMenu:false,fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
+ ranked:[],saved:[],sel:null,dwell:0,dwellMs:0,dwellStartedAt:null,met:false,timer:null,mode:'orig',cjk:false,fs:15,speed:2,auto:false,raf:null,last:0,acc:0,hideBar:false,lastTop:0,lock:0,latinOut:'',showResults:false,hist:[],kb:false,vvH:0,vvTop:0,histOpen:false,lastQ:{t:'',a:''},lastView:null,folders:[],folderSheet:false,folderName:'',folderErr:'',renameSheet:false,renameName:'',renameErr:'',folderMenu:false,fview:null,pick:false,addTarget:null,searchReturnTab:'home',delAsk:false,rmSong:null,prevTab:'home',pickSong:null,
  db:[
   ...["Rolling In The Deep", "To Be Loved", "Someone Like You", "He Won't Go", "Runaway", "Water Under The Bridge", "Skyfall", "Hello", "Easy On Me", "Set Fire To The Rain", "Chasing Pavements", "Make You Feel My Love", "Oh My God", "I Drink Wine", "Cold Shoulder", "River Lea", "Cry Your Heart Out", "Painting Pictures", "Hometown Glory", "One And Only", "My Same", "Daydreamer", "Tired", "Promise This", "Woman Like Me", "Turning Tables", "Send My Love (To Your New Lover)", "When We Were Young"].map((t,i)=>({id:'a'+i,trackName:t,artistName:'Adele',plainLyrics:PH})),
   ...['Good Riddance','Jesus Of Suburbia','Basket Case','Know Your Enemy','American Idiot','Last Night On Earth','Still Breathing','Boulevard Of Broken Dreams','Stray Hearts'].map((t,i)=>({id:'g'+i,trackName:t,artistName:'Green Day',plainLyrics:PH})),
@@ -55,7 +55,7 @@ function pulse(){return{
  ],
  ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
  sv(k,v){try{localStorage.setItem(this.accountId&&ACCOUNT_STATE_KEYS.includes(k)?`${k}:${this.accountId}`:k,JSON.stringify(v))}catch(error){console.error('Could not save local app data:',error);this.syncError='Data tidak dapat disimpan di perangkat ini.'}if(this.accountId&&ACCOUNT_STATE_KEYS.includes(k))this.scheduleAccountSync()},
- async init(){if(window.visualViewport){const f=()=>{if(this.kb)this.vv()};visualViewport.addEventListener('resize',f);visualViewport.addEventListener('scroll',f)}await this.restoreAuthSession()},
+ async init(){if(window.visualViewport){const f=()=>{if(this.kb)this.vv()};visualViewport.addEventListener('resize',f);visualViewport.addEventListener('scroll',f)}document.addEventListener('visibilitychange',()=>this.handleDwellVisibility());await this.restoreAuthSession()},
  async supabaseRequest(path,{method='GET',body,token=SUPABASE_PUBLISHABLE_KEY}={}){const response=await fetch(`${SUPABASE_URL}${path}`,{method,headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${token}`,...(body?{'Content-Type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});const payload=await response.json().catch(()=>null);if(!response.ok){const error=new Error(payload?.msg||payload?.message||payload?.error_description||payload?.error||`Permintaan gagal (${response.status}).`);error.status=response.status;throw error}return payload},
  async accountDataRequest(session,userId,method='GET',data){const url=`${SUPABASE_URL}/rest/v1/account_data${method==='GET'?`?select=data&user_id=eq.${encodeURIComponent(userId)}`:'?on_conflict=user_id'}`;const response=await fetch(url,{method,headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json',...(method==='POST'?{Prefer:'resolution=merge-duplicates,return=minimal'}:{})},...(data?{body:JSON.stringify({user_id:userId,data,updated_at:new Date().toISOString()})}:{})});const payload=await response.json().catch(()=>null);if(!response.ok){const error=new Error(payload?.message||payload?.details||payload?.hint||`Gagal menyinkronkan data akun (${response.status}).`);error.status=response.status;throw error}return payload},
  accountSnapshot(){return{saved:this.saved,folders:this.folders,hist:this.hist,last:this.lastView,ranked:this.ranked,prefs:{fs:this.fs,speed:this.speed}}},
@@ -261,12 +261,30 @@ function pulse(){return{
   this.lastView={id:s.id,trackName:s.trackName,artistName:s.artistName,albumName:s.albumName||'',plainLyrics:s.plainLyrics,latinLyrics:s.latinLyrics};this.sv('pl_last',this.lastView);
   const f=this.db.find(d=>d.id===s.id);
   this.sel=Object.assign({},s,{latinLyrics:s.latinLyrics||(f&&f.latinLyrics)});
-  this.dwell=0;this.met=false;this.mode='orig';this.stopAuto();this.hideBar=false;this.lastTop=0;this.latinOut='';this.$nextTick(()=>{if(this.$refs.lyr)this.$refs.lyr.scrollTop=0});
+  this.dwell=0;this.dwellMs=0;this.dwellStartedAt=document.hidden?null:Date.now();this.met=false;this.mode='orig';this.stopAuto();this.hideBar=false;this.lastTop=0;this.latinOut='';this.$nextTick(()=>{if(this.$refs.lyr)this.$refs.lyr.scrollTop=0});
   this.cjk=/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uac00-\ud7af]/.test(s.plainLyrics||'');
   clearInterval(this.timer);this.timer=setInterval(()=>this.tick(),1000);
  },
- tick(){this.dwell++;if(this.dwell>=60&&!this.met){this.met=true;this.count(this.sel)}},
- skip(){this.dwell=60;this.tick()},
+ tick(){
+  if(document.hidden)return;
+  this.recordDwell();
+ },
+ recordDwell(){
+  if(!this.sel||this.met)return;
+  if(this.dwellStartedAt!==null){
+   this.dwellMs+=Math.max(0,Date.now()-this.dwellStartedAt);
+   this.dwellStartedAt=Date.now();
+  }
+  this.dwell=Math.floor(this.dwellMs/1000);
+  if(this.dwellMs>=60000){
+   this.met=true;this.dwellStartedAt=null;clearInterval(this.timer);this.count(this.sel);
+  }
+ },
+ handleDwellVisibility(){
+  if(document.hidden){this.recordDwell();this.dwellStartedAt=null}
+  else if(this.sel&&!this.met)this.dwellStartedAt=Date.now();
+ },
+ skip(){if(!this.sel||this.met)return;this.dwellMs=60000;this.recordDwell()},
  setFs(d){this.fs=Math.min(28,Math.max(12,this.fs+d));this.savePrefs()},
  setSpeed(d){this.speed=Math.min(6,Math.max(1,this.speed+d));this.savePrefs()},
  savePrefs(){this.sv('pl_prefs',{fs:this.fs,speed:this.speed})},
@@ -292,7 +310,7 @@ function pulse(){return{
   this.raf=requestAnimationFrame(step);
  },
  stopAuto(){this.auto=false;cancelAnimationFrame(this.raf)},
- close(){clearInterval(this.timer);this.stopAuto();this.sel=null},
+ close(){clearInterval(this.timer);this.dwellStartedAt=null;this.stopAuto();this.sel=null},
  count(s){
   const l=[...this.ranked];
   const e=l.find(x=>x.trackName.toLowerCase()===s.trackName.toLowerCase()&&x.artistName.toLowerCase()===s.artistName.toLowerCase());
